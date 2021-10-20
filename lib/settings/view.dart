@@ -2,6 +2,15 @@ import 'package:flutter/material.dart';
 
 import 'package:controlly/settings/model.dart';
 
+final Map configItems = {
+  'haUrl': {'type': 'text', 'name': 'Home Assistant URL', 'description': 'URL to your Home Assistant instance'},
+  'snapcastUrl': {
+    'type': 'text',
+    'name': 'Snapcast Server Address',
+    'description': 'IP or hostname to your Snapcast server'
+  }
+};
+
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
 
@@ -18,23 +27,54 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Controlly Settings')),
-      body: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-          child: Column(children: <Widget>[
-            TextFormField(
-                decoration: const InputDecoration(labelText: "Home Assistant URL"),
-                initialValue: settingsManager.haUrl,
-                onSaved: (String? value) {
-                  // attempt to connect and/or log in
-                }),
-            TextFormField(
-                decoration: const InputDecoration(labelText: "Snapcast Server"),
-                initialValue: settingsManager.snapcastUrl,
-                onSaved: (String? value) {
-                  // attempt to connect and/or log in
-                })
-          ])),
-    );
+        appBar: AppBar(title: const Text('Controlly Settings')),
+        body: ListView.separated(
+          padding: const EdgeInsets.all(8),
+          itemCount: configItems.length,
+          itemBuilder: (BuildContext context, int index) {
+            String key = configItems.keys.elementAt(index);
+            Map configItem = configItems[key];
+            return ListTile(
+                title: Text(configItem['name']),
+                subtitle: Text(settingsManager.getItem(key) ?? ''),
+                enabled: true,
+                onTap: () => {_showConfigDialog(key)});
+          },
+          separatorBuilder: (BuildContext context, int index) => const Divider(),
+        ));
+  }
+
+  Future<void> _showConfigDialog(String key) async {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          Map configItem = configItems[key];
+          Widget formField;
+          if (configItem['type'] == "text") {
+            formField = TextFormField(
+                decoration: const InputDecoration(border: UnderlineInputBorder()),
+                initialValue: settingsManager.getItem(key) ?? '');
+          } else {
+            formField = const Text('invalid type for config item');
+          }
+          return AlertDialog(
+            title: Text(configItem['name']),
+            content: SizedBox(
+                width: 400,
+                height: 200,
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[Text(configItem['description']), formField])),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Save'),
+                onPressed: () {
+                  //settingsManager.setItem(key, );
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
   }
 }
