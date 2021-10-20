@@ -24,6 +24,8 @@ class _SettingsPageState extends State<SettingsPage> {
     super.initState();
   }
 
+  String? formValue;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +40,10 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: Text(configItem['name']),
                 subtitle: Text(settingsManager.getItem(key) ?? ''),
                 enabled: true,
-                onTap: () => {_showConfigDialog(key)});
+                onTap: () {
+                  formValue = settingsManager.getItem(key);
+                  _showConfigDialog(key);
+                });
           },
           separatorBuilder: (BuildContext context, int index) => const Divider(),
         ));
@@ -52,8 +57,14 @@ class _SettingsPageState extends State<SettingsPage> {
           Widget formField;
           if (configItem['type'] == "text") {
             formField = TextFormField(
-                decoration: const InputDecoration(border: UnderlineInputBorder()),
-                initialValue: settingsManager.getItem(key) ?? '');
+              decoration: const InputDecoration(border: UnderlineInputBorder()),
+              initialValue: settingsManager.getItem(key) ?? '',
+              onChanged: (value) {
+                setState(() {
+                  formValue = value;
+                });
+              },
+            );
           } else {
             formField = const Text('invalid type for config item');
           }
@@ -69,8 +80,10 @@ class _SettingsPageState extends State<SettingsPage> {
               TextButton(
                 child: const Text('Save'),
                 onPressed: () {
-                  //settingsManager.setItem(key, );
-                  Navigator.of(context).pop();
+                  setState(() {
+                    settingsManager.setItem(key, formValue);
+                    Navigator.of(context).pop();
+                  });
                 },
               ),
             ],
