@@ -1,9 +1,19 @@
+import 'package:controlly/homeassistant/homeassistant.dart';
+import 'package:controlly/store.dart';
 import 'package:flutter/material.dart';
 
 import 'package:controlly/settings/model.dart';
 
 final Map configItems = {
-  'haUrl': {'type': 'text', 'name': 'Home Assistant URL', 'description': 'URL to your Home Assistant instance'},
+  // 'haUrl': {'type': 'text', 'name': 'Home Assistant URL', 'description': 'URL to your Home Assistant instance'},
+  'haHost': {
+    'type': 'text',
+    'name': 'Home Assistant Hostname',
+    'description': 'Hostname for your Home Assistant instance'
+  },
+  'haPort': {'type': 'text', 'name': 'Home Assistant Port Number', 'description': 'Usually 8123'},
+  'haSSL': {'type': 'bool', 'name': 'Use SSL for Home Assistant', 'description': ''},
+  'haToken': {'type': 'text', 'name': 'Home Assistant Long-Lived Token', 'description': ''},
   'snapcastUrl': {
     'type': 'text',
     'name': 'Snapcast Server Address',
@@ -29,87 +39,124 @@ class _SettingsPageState extends State<SettingsPage> {
     super.initState();
   }
 
+  void refresh() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   String? formValue;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text('Controlly Settings')),
-        body: ListView.separated(
-          padding: const EdgeInsets.all(8),
-          itemCount: configItems.length,
-          itemBuilder: (BuildContext context, int index) {
-            String key = configItems.keys.elementAt(index);
-            Map configItem = configItems[key];
-            if (configItem['type'] == "text") {
-              return ListTile(
-                  title: Text(configItem['name']),
-                  subtitle: Text(settingsManager.get(key) ?? ''),
-                  enabled: true,
-                  onTap: () {
-                    formValue = settingsManager.get(key);
-                    _showConfigDialog(key);
-                  });
-            }
-            if (configItem['type'] == "bool") {
-              return SwitchListTile(
-                  title: Text(configItem['name']),
-                  subtitle: Text(configItem['description'] ?? ''),
-                  value: settingsManager.get(key),
-                  onChanged: (value) {
-                    setState(() {
-                      settingsManager.setItem(key, value);
-                    });
-                  });
-            }
+      appBar: AppBar(title: const Text('Controlly Settings')),
+      body: ListView.separated(
+        padding: const EdgeInsets.all(8),
+        itemCount: configItems.length + 1,
+        itemBuilder: (BuildContext context, int index) {
+          // final element is a connect button
+          if (index == configItems.length) {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ElevatedButton(
+                  onPressed: () async {
+                    // attempt to connect
+                    store.ha?.destroy();
+                    store.ha = HomeAssistant(HomeAssistantSettings(
+                      ip: settingsManager.getItem('haHost') ?? '',
+                      port: int.tryParse(settingsManager.getItem('haPort')) ?? 8123,
+                      ssl: settingsManager.getItem('haSSL') ?? false,
+                      longLivedToken: settingsManager.getItem('haToken') ?? '',
+                    ));
+                    await store.ha!.connect();
+                    if (store.ha!.connected) {
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  child: const Text('CONNECT'),
+                ),
+              ],
+            );
+          }
+
+          // this is clever... might be overkill when we are dealing with just a few settings
+          String key = configItems.keys.elementAt(index);
+          Map configItem = configItems[key];
+          if (configItem['type'] == "text") {
             return ListTile(
               title: Text(configItem['name']),
-              subtitle: Text(settingsManager.get(key) ?? ''),
-            );
-          },
-          separatorBuilder: (BuildContext context, int index) => const Divider(),
-        ));
-  }
-
-  Future<void> _showConfigDialog(String key) async {
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          Map configItem = configItems[key];
-          Widget formField;
-          if (configItem['type'] == "text") {
-            formField = TextFormField(
-              decoration: const InputDecoration(border: UnderlineInputBorder()),
-              initialValue: settingsManager.get(key) ?? '',
-              onChanged: (value) {
-                setState(() {
-                  formValue = value;
-                });
+              subtitle: Text(settingsManager.getItem(key) ?? ''),
+              enabled: true,
+              onTap: () async {
+                formValue = settingsManager.getItem(key);
+                var newVal = await _showConfigDialog(key);
+                if (newVal != null) await settingsManager.setItem(key, newVal);
+                refresh();
               },
             );
-          } else {
-            formField = const Text('invalid type for config item');
           }
-          return AlertDialog(
+          if (configItem['type'] == "bool") {
+            return SwitchListTile(
+              title: Text(configItem['name']),
+              subtitle: Text(configItem['description'] ?? ''),
+              value: settingsManager.getItem(key) ?? false,
+              onChanged: (value) {
+                settingsManager.setItem(key, value);
+                refresh();
+              },
+            );
+          }
+          return ListTile(
             title: Text(configItem['name']),
-            content: SizedBox(
-                width: 400,
-                height: 200,
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[Text(configItem['description']), formField])),
-            actions: <Widget>[
-              TextButton(
-                child: const Text('Save'),
-                onPressed: () {
-                  setState(() {
-                    settingsManager.setItem(key, formValue);
-                    Navigator.of(context).pop();
-                  });
-                },
-              ),
-            ],
+            subtitle: Text(settingsManager.getItem(key) ?? ''),
           );
-        });
+        },
+        separatorBuilder: (BuildContext context, int index) => const Divider(),
+      ),
+    );
+  }
+
+  Future<String?> _showConfigDialog(String key, [String initialValue = '']) async {
+    Map configItem = configItems[key];
+    var type = configItem['type'];
+    var name = configItem['name'];
+    var description = configItem['description'];
+    var controller = TextEditingController(text: initialValue);
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        Widget formField;
+        if (type == "text") {
+          formField = TextFormField(
+            controller: controller,
+            decoration: const InputDecoration(border: UnderlineInputBorder()),
+            onChanged: (value) {},
+          );
+        } else {
+          formField = const Text('invalid type for config item');
+        }
+        return SimpleDialog(
+          title: Text(name ?? key),
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(description ?? ''),
+                formField,
+              ],
+            ),
+            TextButton(
+              child: const Text('Save'),
+              onPressed: () {
+                Navigator.of(context).pop(controller.text);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
