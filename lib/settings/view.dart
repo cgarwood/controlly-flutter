@@ -8,6 +8,11 @@ final Map configItems = {
     'type': 'text',
     'name': 'Snapcast Server Address',
     'description': 'IP or hostname to your Snapcast server'
+  },
+  "certificateVerification": {
+    'type': 'bool',
+    'name': 'Verify SSL Certificates',
+    'description': 'Require valid (trusted) SSL certificates'
   }
 };
 
@@ -36,14 +41,31 @@ class _SettingsPageState extends State<SettingsPage> {
           itemBuilder: (BuildContext context, int index) {
             String key = configItems.keys.elementAt(index);
             Map configItem = configItems[key];
+            if (configItem['type'] == "text") {
+              return ListTile(
+                  title: Text(configItem['name']),
+                  subtitle: Text(settingsManager.get(key) ?? ''),
+                  enabled: true,
+                  onTap: () {
+                    formValue = settingsManager.get(key);
+                    _showConfigDialog(key);
+                  });
+            }
+            if (configItem['type'] == "bool") {
+              return SwitchListTile(
+                  title: Text(configItem['name']),
+                  subtitle: Text(configItem['description'] ?? ''),
+                  value: settingsManager.get(key),
+                  onChanged: (value) {
+                    setState(() {
+                      settingsManager.setItem(key, value);
+                    });
+                  });
+            }
             return ListTile(
-                title: Text(configItem['name']),
-                subtitle: Text(settingsManager.getItem(key) ?? ''),
-                enabled: true,
-                onTap: () {
-                  formValue = settingsManager.getItem(key);
-                  _showConfigDialog(key);
-                });
+              title: Text(configItem['name']),
+              subtitle: Text(settingsManager.get(key) ?? ''),
+            );
           },
           separatorBuilder: (BuildContext context, int index) => const Divider(),
         ));
@@ -58,7 +80,7 @@ class _SettingsPageState extends State<SettingsPage> {
           if (configItem['type'] == "text") {
             formField = TextFormField(
               decoration: const InputDecoration(border: UnderlineInputBorder()),
-              initialValue: settingsManager.getItem(key) ?? '',
+              initialValue: settingsManager.get(key) ?? '',
               onChanged: (value) {
                 setState(() {
                   formValue = value;

@@ -16,6 +16,21 @@ class SettingsManager {
   String get snapcastUrl => getItem('snapcastUrl') ?? '';
   set snapcastUrl(String url) => setItem('snapcastUrl', url);
 
+  bool get certificateVerification => getItem('certificateVerification') ?? true;
+  set certificateVerification(bool value) => setItem('certificateVerification', value);
+
+  Map<String, dynamic> _toMap() {
+    return {'haUrl': haUrl, 'snapcastUrl': snapcastUrl, 'certificateVerification': certificateVerification};
+  }
+
+  dynamic get(String propertyName) {
+    var _mapRep = _toMap();
+    if (_mapRep.containsKey(propertyName)) {
+      return _mapRep[propertyName];
+    }
+    throw ArgumentError('propery not found');
+  }
+
   SettingsManager() {
     box = GetStorage('controlly');
     ready = load();
