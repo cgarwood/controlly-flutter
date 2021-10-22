@@ -150,6 +150,13 @@ class _ControllyHomeState extends State<ControllyHome> {
                       height: 60,
                       child: Container(
                         color: Colors.red.withAlpha(100),
+                        child: IconButton(
+                          iconSize: 60,
+                          icon: const Icon(
+                            Icons.settings,
+                          ),
+                          onPressed: () => launch(context, const SettingsPage()),
+                        ),
                       ),
                     ),
 

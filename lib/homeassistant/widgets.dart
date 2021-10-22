@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import './homeassistant.dart';
-import '../widgets/widgets.dart';
+import '../internalwidgets/widgets.dart';
 
 List<Widget> buildHomeAssistantEntityTiles(
   HomeAssistant hass, {
