@@ -91,7 +91,7 @@ class _SettingsPageState extends State<SettingsPage> {
               enabled: true,
               onTap: () async {
                 formValue = settingsManager.getItem(key);
-                var newVal = await _showConfigDialog(key);
+                var newVal = await _showConfigDialog(key, settingsManager.getItem(key) ?? '');
                 if (newVal != null) await settingsManager.setItem(key, newVal);
                 refresh();
               },
@@ -137,23 +137,23 @@ class _SettingsPageState extends State<SettingsPage> {
         } else {
           formField = const Text('invalid type for config item');
         }
-        return SimpleDialog(
+        return AlertDialog(
           title: Text(name ?? key),
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(description ?? ''),
-                formField,
-              ],
-            ),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(description ?? ''),
+              formField,
+            ],
+          ),
+          actions: [
             TextButton(
               child: const Text('Save'),
               onPressed: () {
                 Navigator.of(context).pop(controller.text);
               },
-            ),
+            )
           ],
         );
       },
