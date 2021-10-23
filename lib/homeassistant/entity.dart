@@ -63,16 +63,16 @@ class HomeAssistantEntity {
     attributes = stateData['attributes'];
   }
 
-  void handleUpdate(Map<String, dynamic> state) {
-    stateData = state;
-    this.state = state['state'];
-    attributes = state['attributes'];
-    name = state['attributes']['friendly_name'] ?? id;
-    deviceClass = state['attributes']['device_class'];
-    entityCategory = state['attributes']['entity_category'];
-    icon = state['attributes']['icon'];
-    entityPicture = state['attributes']['entity_picture'];
-    assumedState = state['attributes']['assumed_state'];
+  void handleUpdate(Map<String, dynamic> newState) {
+    stateData = newState;
+    state = newState['state'];
+    attributes = newState['attributes'];
+    name = newState['attributes']['friendly_name'] ?? id;
+    deviceClass = newState['attributes']['device_class'];
+    entityCategory = newState['attributes']['entity_category'];
+    icon = newState['attributes']['icon'];
+    entityPicture = newState['attributes']['entity_picture'];
+    assumedState = newState['attributes']['assumed_state'];
     notify();
   }
 }

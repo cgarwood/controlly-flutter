@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:controlly/homeassistant/entities/climate.dart';
 import 'package:controlly/homeassistant/entities/switch.dart';
 import 'package:controlly/homeassistant/entity.dart';
 import 'package:flutter/material.dart';
@@ -185,7 +186,7 @@ class HomeAssistantEntityTile extends StatelessWidget {
             if (newEntity != null) {
               (entity as HomeAssistantClimateEntity).setTemperature(
                 newEntity.currentSetTemperature!,
-                newEntity.heatMode,
+                newEntity.hvacMode,
               );
             }
           }
@@ -344,12 +345,12 @@ class HomeAssistantClimateEditPage extends StatefulWidget {
 class _HomeAssistantClimateEditPageState extends State<HomeAssistantClimateEditPage> {
   // private fields for editing
   late HomeAssistantFanMode _mode;
-  late HomeAssistantHeatMode _heatMode;
+  late HomeAssistantHVACMode _hvacMode;
   int _newTemp = 0;
   bool _isOn = false;
   List<FocusNode> nodes = [];
 
-  String get heatModeString => _heatMode == HomeAssistantHeatMode.heat ? 'HEAT' : 'COOL';
+  String get hvacModeString => _hvacMode == HomeAssistantHVACMode.heat ? 'HEAT' : 'COOL';
 
   void refresh() {
     if (mounted) setState(() {});
@@ -361,7 +362,7 @@ class _HomeAssistantClimateEditPageState extends State<HomeAssistantClimateEditP
     _mode = widget.entity.fanMode;
     _newTemp = widget.entity.currentSetTemperature ?? 0;
     _isOn = widget.entity.fanOn ?? false;
-    _heatMode = widget.entity.heatMode;
+    _hvacMode = widget.entity.hvacMode;
     for (var i = 0; i < 3; i++) {
       nodes.add(FocusNode());
     }
@@ -408,11 +409,11 @@ class _HomeAssistantClimateEditPageState extends State<HomeAssistantClimateEditP
           ),
           // fan on or off
           SwitchListTile(
-            value: _heatMode == HomeAssistantHeatMode.heat,
-            title: Text('Will $heatModeString to $_newTemp'),
+            value: _hvacMode == HomeAssistantHVACMode.heat,
+            title: Text('Will $hvacModeString to $_newTemp'),
             subtitle: const Text(''),
             onChanged: (bool b) {
-              _heatMode = b ? HomeAssistantHeatMode.heat : HomeAssistantHeatMode.cool;
+              _hvacMode = b ? HomeAssistantHVACMode.heat : HomeAssistantHVACMode.cool;
               refresh();
             },
           ),
@@ -430,7 +431,7 @@ class _HomeAssistantClimateEditPageState extends State<HomeAssistantClimateEditP
                 onPressed: () {
                   widget.entity.fanMode = _mode;
                   widget.entity.currentSetTemperature = _newTemp;
-                  widget.entity.heatMode = _heatMode;
+                  widget.entity.hvacMode = _hvacMode;
                   Navigator.of(context).pop(widget.entity);
                 },
               ),

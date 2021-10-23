@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:async';
 
+import 'package:controlly/homeassistant/entities/climate.dart';
 import 'package:controlly/homeassistant/entities/switch.dart';
 import 'package:controlly/homeassistant/entity.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -12,9 +13,6 @@ import '../utils/ws.dart';
 import '../settings/model.dart';
 
 enum ComponentConnectionStatus { disconnected, connecting, connected, failed }
-
-enum HomeAssistantFanMode { forcedOn, auto }
-enum HomeAssistantHeatMode { heat, cool, auto }
 
 class HomeAssistantSettings {
   String ip;
@@ -269,17 +267,6 @@ class HomeAssistant {
                   hae = HomeAssistantSwitchEntity(id, this, result);
                   break;
                 case 'climate':
-                  /*
-                  var currentTemperature = result['attributes']['current_temperature'];
-                  var currentSetTemperature = result['attributes']['temperature'];
-                  var fanOn = result['attributes']['fan_action'] != 'idle';
-                  var fanMode = result['attributes']['fan_mode'] == 'auto'
-                      ? HomeAssistantFanMode.auto
-                      : HomeAssistantFanMode.forcedOn;
-                  var heatMode = result['attributes']['hvac_action'] == 'heat'
-                      ? HomeAssistantHeatMode.heat
-                      : HomeAssistantHeatMode.cool;
-                */
                   hae = HomeAssistantClimateEntity(
                     id,
                     this,
@@ -335,66 +322,6 @@ class HomeAssistant {
   void getStates() {
     var msg = WSMessage.fromMap({'type': 'get_states'});
     send(msg);
-  }
-}
-
-class HomeAssistantClimateEntity extends HomeAssistantEntity {
-  int? currentTemperature;
-  int? currentSetTemperature;
-  bool? fanOn;
-  HomeAssistantFanMode fanMode = HomeAssistantFanMode.auto;
-  HomeAssistantHeatMode heatMode = HomeAssistantHeatMode.cool;
-
-  HomeAssistantClimateEntity(
-    id,
-    parent,
-    stateData,
-  ) : super(
-          id: id,
-          type: HomeAssistantEntityType.switchEntity,
-          parent: parent,
-          stateData: stateData,
-        );
-
-  @override
-  String toString() {
-    String retval = name ?? '';
-    if (currentTemperature != null) retval += ' • $currentTemperature';
-    if (currentSetTemperature != null) retval += ' (${currentSetTemperature ?? ''})';
-    return retval;
-  }
-
-  /// will preserve the existing heatMode
-  void setTemperature(int temp, [HomeAssistantHeatMode? heatMode]) {
-    if (type != HomeAssistantEntityType.climateEntity) return;
-    this.heatMode = heatMode ?? this.heatMode;
-    transitioning = true;
-    parent.send(WSMessage.fromMap({
-      'type': 'call_service',
-      'domain': 'climate',
-      'service': 'set_temperature',
-      'service_data': {
-        'entity_id': id,
-        'temperature': temp,
-        'hvac_mode': this.heatMode == HomeAssistantHeatMode.heat ? 'heat' : 'cool',
-      }
-    }));
-  }
-
-  /// will reset fan mode to auto
-  void setFan([HomeAssistantFanMode fanMode = HomeAssistantFanMode.auto]) {
-    this.fanMode = fanMode;
-    if (type != HomeAssistantEntityType.climateEntity) return;
-    transitioning = true;
-    parent.send(WSMessage.fromMap({
-      'type': 'call_service',
-      'domain': 'climate',
-      'service': 'set_fan_mode',
-      'service_data': {
-        'entity_id': id,
-        'fan_mode': fanMode == HomeAssistantFanMode.forcedOn ? 'on' : 'auto',
-      }
-    }));
   }
 }
 
