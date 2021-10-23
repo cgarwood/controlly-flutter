@@ -31,8 +31,6 @@ class HomeAssistantSettings {
   String get accessToken => longLivedToken.isNotEmpty ? longLivedToken : expiringAccessToken;
   bool get shouldRefresh => tokenTime.add(expiresIn).isBefore(DateTime.now()) != false; // null or true => true
 
-  Set<String> favoriteEntityIds;
-
   HomeAssistantSettings({
     this.ip = '',
     this.port = 0,
@@ -41,7 +39,6 @@ class HomeAssistantSettings {
     this.refreshToken = '',
     this.expiresIn = const Duration(),
     this.ssl = false,
-    this.favoriteEntityIds = const {},
     DateTime? tokenTime,
   }) : tokenTime = tokenTime ?? DateTime(0);
 
@@ -54,7 +51,6 @@ class HomeAssistantSettings {
     var refreshToken = data['refreshToken'] ?? '';
     var expiresIn = Duration(seconds: data['expiresIn'] ?? 0);
     var tokenTime = DateTime.fromMillisecondsSinceEpoch(data['tokenTime'] ?? 0);
-    var favoriteEntityIds = Set<String>.from(data['favoriteEntityIds'].map((e) => e.toString()) ?? <String>[]);
     return HomeAssistantSettings(
       ip: ip,
       port: port,
@@ -64,7 +60,6 @@ class HomeAssistantSettings {
       refreshToken: refreshToken,
       expiresIn: expiresIn,
       tokenTime: tokenTime,
-      favoriteEntityIds: favoriteEntityIds,
     );
   }
 
@@ -77,7 +72,6 @@ class HomeAssistantSettings {
         'refreshToken': refreshToken,
         'expiresIn': expiresIn.inSeconds,
         'tokenTime': tokenTime.millisecondsSinceEpoch,
-        'favoriteEntityIds': favoriteEntityIds.toList(),
       };
 
   save() {
@@ -240,6 +234,7 @@ class HomeAssistant {
             var stateData = data?['event']['data'];
             try {
               var entity = entities.firstWhere((e) => e.id == stateData['entity_id']);
+              entity.state = stateData['new_state']['state'];
               entity.isOn = stateData['new_state']['state'] == 'on';
               entity.transitioning = false;
               updateController.add('');
@@ -303,7 +298,6 @@ class HomeAssistant {
 
               // hae might be null, so we doublecheck
               if (hae is HomeAssistantEntity) {
-                hae._favorite = settings.favoriteEntityIds.contains(hae.id);
                 hae.attributes = result['attributes'];
                 entities.add(hae);
                 updateController.add('');
@@ -354,20 +348,6 @@ class HomeAssistantEntity {
 
   bool isOn = false;
   Map attributes = {};
-
-  bool _favorite = false;
-  bool get favorite => _favorite;
-  set favorite(bool b) {
-    _favorite = b;
-    if (b) {
-      parent.settings.favoriteEntityIds.add(id);
-    } else {
-      parent.settings.favoriteEntityIds.remove(id);
-    }
-    parent.settings.save();
-    notify();
-    parent.notify();
-  }
 
   bool _transitioning = false;
   bool get transitioning => _transitioning;
