@@ -63,8 +63,8 @@ class WS {
   StreamSubscription? _socketListener;
 
   // streams
-  StreamController<WSMessage> _outputController;
-  StreamController<bool> _connectionStatusController;
+  final StreamController<WSMessage> _outputController;
+  final StreamController<bool> _connectionStatusController;
   Stream<bool> get connectionStatus => _connectionStatusController.stream;
 
   WS(this.niceName)
@@ -119,9 +119,9 @@ class WS {
   }
 
   void _socketStart({
-    int retrySeconds: 2,
-    bool fromHeartBeat: false,
-    bool isAutoReconnect: false,
+    int retrySeconds = 2,
+    bool fromHeartBeat = false,
+    bool isAutoReconnect = false,
   }) async {
     // we only want one instance, so we close the previous one
     await _socket?.close(4999, 'self');

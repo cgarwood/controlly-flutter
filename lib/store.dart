@@ -1,5 +1,3 @@
-import 'package:controlly/settings/model.dart';
-
 import './homeassistant/homeassistant.dart';
 // import './snapcast/snapcast.dart';
 

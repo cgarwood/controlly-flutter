@@ -23,7 +23,7 @@ res.redirect('https://accounts.spotify.com/authorize' +
 class HassOAuth2Page extends StatefulWidget {
   final HomeAssistantSettings settings;
   final Uri response;
-  HassOAuth2Page(this.settings, this.response);
+  const HassOAuth2Page(this.settings, this.response);
 
   @override
   _HassOAuth2PageState createState() => _HassOAuth2PageState();
@@ -71,15 +71,13 @@ class _HassOAuth2PageState extends State<HassOAuth2Page> {
   @override
   void initState() {
     super.initState();
-    if (widget.response != null) {
-      code = widget.response.queryParameters['code'];
-      // should match the state of the request
-      state = widget.response.queryParameters['state'];
+    code = widget.response.queryParameters['code'];
+    // should match the state of the request
+    state = widget.response.queryParameters['state'];
 
-      // if we have a code, then we need to convert it to a refresh and access token
-      if (code != null) {
-        getTokens(code!);
-      }
+    // if we have a code, then we need to convert it to a refresh and access token
+    if (code != null) {
+      getTokens(code!);
     }
   }
 

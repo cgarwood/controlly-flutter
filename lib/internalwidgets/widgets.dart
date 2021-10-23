@@ -19,7 +19,7 @@ class MyTextInput extends StatefulWidget {
   final bool monospace;
   final bool autoselect;
 
-  MyTextInput({
+  const MyTextInput({
     this.onChanged,
     this.focusNode,
     this.nextNode,

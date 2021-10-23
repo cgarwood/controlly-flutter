@@ -6,27 +6,31 @@ import '../internalwidgets/widgets.dart';
 
 List<Widget> buildHomeAssistantEntityTiles(
   HomeAssistant hass, {
-  String filter: '',
+  String filter = '',
 }) {
   var retval = <Widget>[];
   var entities = hass.entities;
   if (filter.isNotEmpty) {
     entities = entities.where((c) => (c.name ?? '' + c.id).toLowerCase().contains(filter.toLowerCase())).toList();
   }
-  for (var c in entities) retval.add(HomeAssistantEntityTile(c));
+  for (var c in entities) {
+    retval.add(HomeAssistantEntityTile(c));
+  }
   return retval;
 }
 
 List<Widget> buildHomeAssistantEntityButtons(
   HomeAssistant hass, {
-  String filter: '',
+  String filter = '',
 }) {
   var retval = <Widget>[];
   var entities = hass.entities;
   if (filter.isNotEmpty) {
     entities = entities.where((c) => (c.name ?? '' + c.id).toLowerCase().contains(filter.toLowerCase())).toList();
   }
-  for (var c in entities) retval.add(HomeAssistantEntityButton(entity: c));
+  for (var c in entities) {
+    retval.add(HomeAssistantEntityButton(entity: c));
+  }
   return retval;
 }
 
@@ -35,10 +39,10 @@ class HomeAssistantEntityView extends StatefulWidget {
   final bool showAll;
   final bool asGrid;
 
-  HomeAssistantEntityView(
+  const HomeAssistantEntityView(
     this.hass, {
-    this.showAll: true,
-    this.asGrid: false,
+    this.showAll = true,
+    this.asGrid = false,
   });
 
   @override
@@ -102,12 +106,12 @@ class _HomeAssistantEntityViewState extends State<HomeAssistantEntityView> {
                   if (widget.showAll)
                     ExpansionPanelRadio(
                       value: 'all',
-                      headerBuilder: (_, __) => ListTile(title: Text('All Entities'), dense: true),
+                      headerBuilder: (_, __) => const ListTile(title: Text('All Entities'), dense: true),
                       canTapOnHeader: true,
                       body: widget.asGrid
                           ? Container(
                               width: double.infinity,
-                              padding: EdgeInsets.only(bottom: 20, left: 10, right: 10),
+                              padding: const EdgeInsets.only(bottom: 20, left: 10, right: 10),
                               child: Wrap(
                                 alignment: WrapAlignment.center,
                                 spacing: 10,
@@ -149,7 +153,7 @@ class _HomeAssistantEntityGridState extends State<HomeAssistantEntityGrid> {
 
 class HomeAssistantEntityTile extends StatelessWidget {
   final HomeAssistantEntity entity;
-  HomeAssistantEntityTile(this.entity);
+  const HomeAssistantEntityTile(this.entity);
 
   @override
   Widget build(BuildContext context) {
@@ -276,11 +280,9 @@ class _HomeAssistantEntityButtonState extends State<HomeAssistantEntityButton> {
 
   @override
   Widget build(BuildContext context) {
-    Widget w;
     switch (widget.entity.runtimeType) {
       case HomeAssistantClimateEntity:
     }
-    bool isClimate = (widget.entity is HomeAssistantClimateEntity);
     return AnimatedContainer(
       duration: const Duration(seconds: 1),
       width: 90,
@@ -375,18 +377,18 @@ class _HomeAssistantClimateEditPageState extends State<HomeAssistantClimateEditP
             alignment: Alignment.center,
             child: Text(
               widget.entity.currentTemperature.toString(),
-              style: TextStyle(fontSize: 100),
+              style: const TextStyle(fontSize: 100),
             ),
           ),
           // set temperature
           Container(
-            padding: EdgeInsets.only(left: 20, right: 20, bottom: 30),
+            padding: const EdgeInsets.only(left: 20, right: 20, bottom: 30),
             child: MyTextInput(
               label: 'Set New Temperature',
               initialValue: _newTemp.toString(),
               focusNode: nodes[0],
               // nextNode: nodes[1],
-              keyboardType: TextInputType.numberWithOptions(),
+              keyboardType: const TextInputType.numberWithOptions(),
               onChanged: (String s) {
                 _newTemp = int.tryParse(s.trim()) ?? _newTemp;
               },
@@ -406,7 +408,7 @@ class _HomeAssistantClimateEditPageState extends State<HomeAssistantClimateEditP
           SwitchListTile(
             value: _heatMode == HomeAssistantHeatMode.heat,
             title: Text('Will $heatModeString to $_newTemp'),
-            subtitle: Text(''),
+            subtitle: const Text(''),
             onChanged: (bool b) {
               _heatMode = b ? HomeAssistantHeatMode.heat : HomeAssistantHeatMode.cool;
               refresh();
@@ -416,13 +418,13 @@ class _HomeAssistantClimateEditPageState extends State<HomeAssistantClimateEditP
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
               RaisedButton(
-                child: Text('CANCEL'),
+                child: const Text('CANCEL'),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               RaisedButton(
-                child: Text('SAVE'),
+                child: const Text('SAVE'),
                 onPressed: () {
                   widget.entity.fanMode = _mode;
                   widget.entity.currentSetTemperature = _newTemp;
@@ -494,7 +496,7 @@ class _HomeAssistantClimateEntityButtonState extends State<HomeAssistantClimateE
 
 class HomeAssistantSwitchEntityButton extends StatefulWidget {
   final HomeAssistantSwitchEntity entity;
-  HomeAssistantSwitchEntityButton(this.entity);
+  const HomeAssistantSwitchEntityButton(this.entity);
   @override
   _HomeAssistantSwitchEntityButtonState createState() => _HomeAssistantSwitchEntityButtonState();
 }

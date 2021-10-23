@@ -5,7 +5,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
-import './homeassistant.dart';
 import '../config.dart';
 import '../utils/ws.dart';
 import '../settings/model.dart';
@@ -398,7 +397,7 @@ class HomeAssistantEntity {
   }
 
   void handleUpdate(Map<String, dynamic> state) {
-    this.stateData = state;
+    stateData = state;
     this.state = state['state'];
     isOn = state['state'] == 'on';
     attributes = state['attributes'];
@@ -421,6 +420,7 @@ class HomeAssistantSwitchEntity extends HomeAssistantEntity {
           stateData: stateData,
         );
 
+  @override
   String toString() => '$name (${isOn ? 'on' : 'off'})';
 
   // null = toggle, turnOn = on, else off
@@ -442,7 +442,7 @@ class HomeAssistantSwitchEntity extends HomeAssistantEntity {
     parent.send(WSMessage.fromMap({
       'type': 'call_service',
       'domain': id.split('.').first,
-      'service': turnOn == null
+      'service': turnOn
           ? 'toggle'
           : turnOn
               ? 'turn_on'
@@ -472,6 +472,7 @@ class HomeAssistantClimateEntity extends HomeAssistantEntity {
           stateData: stateData,
         );
 
+  @override
   String toString() {
     String retval = name ?? '';
     if (currentTemperature != null) retval += ' • $currentTemperature';
