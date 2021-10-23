@@ -1,3 +1,6 @@
+// TODO: Update to match current Home Assistant Climate Entity Model:
+// https://developers.home-assistant.io/docs/core/entity/climate
+
 import 'package:controlly/homeassistant/entity.dart';
 import 'package:controlly/utils/ws.dart';
 
