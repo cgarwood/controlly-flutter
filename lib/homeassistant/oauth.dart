@@ -58,7 +58,7 @@ class _HassOAuth2PageState extends State<HassOAuth2Page> {
     var res = await http.post(uri, body: {
       'grant_type': 'authorization_code',
       'code': code,
-      'redirect_uri': 'proproducer://main/hass',
+      'redirect_uri': 'controlly://main/hass',
       'client_id': Config.hassClientId,
     });
     var data = json.decode(res.body);
