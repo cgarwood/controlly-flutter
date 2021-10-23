@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:async';
 
 import 'package:controlly/homeassistant/entities/climate.dart';
+import 'package:controlly/homeassistant/entities/sensor.dart';
 import 'package:controlly/homeassistant/entities/switch.dart';
 import 'package:controlly/homeassistant/entity.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -277,8 +278,7 @@ class HomeAssistant {
                   hae = HomeAssistantScriptEntity(name, id, this, isOn);
                   break;
                 case 'sensor':
-                  hae = HomeAssistantEntity(
-                      id: id, type: HomeAssistantEntityType.sensorEntity, parent: this, stateData: result);
+                  hae = HomeAssistantSensorEntity(id, this, result);
                   break;
                 default:
                   // not one of the three entity types we track... abort
