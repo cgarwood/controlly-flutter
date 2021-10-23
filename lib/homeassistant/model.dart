@@ -345,6 +345,9 @@ class HomeAssistantEntity {
   HomeAssistantEntityType type;
   HomeAssistant parent;
 
+  String? state;
+  bool? available;
+
   bool isOn = false;
   Map attributes = {};
 

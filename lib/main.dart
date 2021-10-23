@@ -4,6 +4,7 @@ import 'package:controlly/settings/view.dart';
 import 'package:controlly/store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:controlly/widgets/sensor.dart';
 
 void main() {
   runApp(const MyApp());
@@ -166,11 +167,12 @@ class _ControllyHomeState extends State<ControllyHome> {
                       top: 0,
                       bottom: 0,
                       right: 0,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
+                      child: Wrap(
+                        spacing: 10,
+                        runSpacing: 10,
                         children: [
-                          for (var entity in store.ha!.entities)
-                            Container(
+                          for (var entity in store.ha!.entities) SensorWidget(entityId: entity.id),
+                          /* Container(
                               width: 200,
                               height: 100,
                               color: Colors.blue,
@@ -188,7 +190,7 @@ class _ControllyHomeState extends State<ControllyHome> {
                                     )
                                 ],
                               ),
-                            )
+                            ) */
                         ],
                       ),
                     ),
