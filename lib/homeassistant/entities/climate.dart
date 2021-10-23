@@ -51,7 +51,7 @@ class HomeAssistantClimateEntity extends HomeAssistantEntity {
 
   @override
   String toString() {
-    String retval = name ?? '';
+    String retval = name;
     if (currentTemperature != null) retval += ' • $currentTemperature';
     if (currentSetTemperature != null) retval += ' (${currentSetTemperature ?? ''})';
     return retval;

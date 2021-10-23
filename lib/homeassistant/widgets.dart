@@ -14,7 +14,7 @@ List<Widget> buildHomeAssistantEntityTiles(
   var retval = <Widget>[];
   var entities = hass.entities;
   if (filter.isNotEmpty) {
-    entities = entities.where((c) => (c.name ?? '' + c.id).toLowerCase().contains(filter.toLowerCase())).toList();
+    entities = entities.where((c) => (c.name + c.id).toLowerCase().contains(filter.toLowerCase())).toList();
   }
   for (var c in entities) {
     retval.add(HomeAssistantEntityTile(c));
@@ -29,7 +29,7 @@ List<Widget> buildHomeAssistantEntityButtons(
   var retval = <Widget>[];
   var entities = hass.entities;
   if (filter.isNotEmpty) {
-    entities = entities.where((c) => (c.name ?? '' + c.id).toLowerCase().contains(filter.toLowerCase())).toList();
+    entities = entities.where((c) => (c.name + c.id).toLowerCase().contains(filter.toLowerCase())).toList();
   }
   for (var c in entities) {
     retval.add(HomeAssistantEntityButton(entity: c));
@@ -319,7 +319,7 @@ class _HomeAssistantEntityButtonState extends State<HomeAssistantEntityButton> {
                 height: 26,
                 margin: const EdgeInsets.only(bottom: 2),
                 child: Text(
-                  widget.caption ?? widget.entity.name ?? '',
+                  widget.caption ?? widget.entity.name,
                   textAlign: TextAlign.center,
                   // textWidthBasis: TextWidthBasis.parent,
                   style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
@@ -371,7 +371,7 @@ class _HomeAssistantClimateEditPageState extends State<HomeAssistantClimateEditP
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.entity.name ?? '')),
+      appBar: AppBar(title: Text(widget.entity.name)),
       body: ListView(
         children: <Widget>[
           // current temperature

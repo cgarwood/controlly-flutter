@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 
 class SensorWidget extends StatefulWidget {
   String entityId;
-  String? state;
-  bool? available;
 
   SensorWidget({Key? key, required this.entityId});
 
@@ -21,14 +19,21 @@ class _SensorWidgetState extends State<SensorWidget> {
       height: 128,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: entity.state == 'on' ? Colors.green : Colors.red,
+          color: !entity.available
+              ? Colors.grey[300]
+              : entity.state == 'on'
+                  ? Colors.green
+                  : Colors.red,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Text(widget.entityId),
-            Text(entity.state ?? ''),
-            Text(entity.available ?? true ? 'available' : 'unavailable'),
+            const SizedBox(height: 8),
+            Text(entity.name, textAlign: TextAlign.center),
+            const SizedBox(height: 8),
+            Text(entity.state ?? '',
+                textAlign: TextAlign.center, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text(entity.available ? 'available' : 'unavailable'),
           ],
         ),
       ),

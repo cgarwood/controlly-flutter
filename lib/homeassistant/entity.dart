@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:controlly/homeassistant/model.dart';
 import 'package:controlly/utils/ws.dart';
+import 'package:controlly/utils/helpers.dart';
 
 enum HomeAssistantEntityType {
   switchEntity,
@@ -16,6 +17,8 @@ enum HomeAssistantEntityType {
   cameraEntity
 }
 
+const UNAVAILABLE_STATES = ['unavailable', 'unknown'];
+
 class HomeAssistantEntity {
   // internal fields
   String id;
@@ -26,12 +29,12 @@ class HomeAssistantEntity {
 
   // Home Assistant entity properties:
   // https://developers.home-assistant.io/docs/core/entity#generic-properties
-  String? name;
+  late String name;
   String? state;
-  bool? available;
+  bool available = false;
   String? deviceClass;
   String? entityCategory;
-  bool? assumedState;
+  bool assumedState = false;
   String? entityPicture;
   String? icon;
 
@@ -52,14 +55,14 @@ class HomeAssistantEntity {
 
   HomeAssistantEntity({required this.id, required this.type, required this.parent, required this.stateData}) {
     domain = id.split('.')[0];
-    name = stateData['attributes']?['friendly_name'];
+    name = computeStateName(stateData);
     state = stateData['state'];
-    available = stateData['attributes']?['available'];
-    deviceClass = stateData['attributes']?['device_class'];
-    entityCategory = stateData['attributes']?['entity_category'];
-    assumedState = stateData['attributes']?['assumed_state'];
-    entityPicture = stateData['attributes']?['entity_picture'];
-    icon = stateData['attributes']?['icon'];
+    available = stateData['state'] != "unavailable";
+    deviceClass = stateData['attributes']['device_class'];
+    entityCategory = stateData['attributes']['entity_category'];
+    assumedState = stateData['attributes']['assumed_state'] ?? false;
+    entityPicture = stateData['attributes']['entity_picture'];
+    icon = stateData['attributes']['icon'];
     attributes = stateData['attributes'];
   }
 
@@ -67,12 +70,13 @@ class HomeAssistantEntity {
     stateData = newState;
     state = newState['state'];
     attributes = newState['attributes'];
-    name = newState['attributes']['friendly_name'] ?? id;
+    available = newState['state'] != "unavailable";
+    name = computeStateName(stateData);
     deviceClass = newState['attributes']['device_class'];
     entityCategory = newState['attributes']['entity_category'];
     icon = newState['attributes']['icon'];
     entityPicture = newState['attributes']['entity_picture'];
-    assumedState = newState['attributes']['assumed_state'];
+    assumedState = newState['attributes']['assumed_state'] ?? false;
     notify();
   }
 }

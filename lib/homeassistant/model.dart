@@ -234,12 +234,9 @@ class HomeAssistant {
             try {
               var entity = entities.firstWhere((e) => e.id == stateData['entity_id']);
               entity.handleUpdate(stateData['new_state']);
-              /*
-              entity.state = stateData['new_state']['state'];
-              entity.isOn = stateData['new_state']['state'] == 'on';
-              entity.transitioning = false;
-              */
               updateController.add('');
+            } on StateError {
+              print('No entity handler for ${stateData['entity_id']}');
             } catch (e) {
               print(e);
             }

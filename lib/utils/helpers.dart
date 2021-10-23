@@ -42,3 +42,10 @@ String tod2timestring(TimeOfDay tod) {
   var minute = tod.minute.toString().padLeft(2, '0');
   return '$hour:$minute $ampm';
 }
+
+String computeStateName(entity) {
+  if (entity['attributes']['friendly_name'] == null) {
+    return entity['entity_id'].split('.')[1].replaceAll('_', ' ');
+  }
+  return entity['attributes']['friendly_name'];
+}
