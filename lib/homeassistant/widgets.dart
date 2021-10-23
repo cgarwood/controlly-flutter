@@ -6,7 +6,6 @@ import '../internalwidgets/widgets.dart';
 
 List<Widget> buildHomeAssistantEntityTiles(
   HomeAssistant hass, {
-  favoritesOnly: false,
   String filter: '',
 }) {
   var retval = <Widget>[];
@@ -14,13 +13,12 @@ List<Widget> buildHomeAssistantEntityTiles(
   if (filter.isNotEmpty) {
     entities = entities.where((c) => (c.name + c.id).toLowerCase().contains(filter.toLowerCase())).toList();
   }
-  for (var c in entities) if (c.favorite || !favoritesOnly) retval.add(HomeAssistantEntityTile(c));
+  for (var c in entities) retval.add(HomeAssistantEntityTile(c));
   return retval;
 }
 
 List<Widget> buildHomeAssistantEntityButtons(
   HomeAssistant hass, {
-  favoritesOnly: false,
   String filter: '',
 }) {
   var retval = <Widget>[];
@@ -28,22 +26,18 @@ List<Widget> buildHomeAssistantEntityButtons(
   if (filter.isNotEmpty) {
     entities = entities.where((c) => (c.name + c.id).toLowerCase().contains(filter.toLowerCase())).toList();
   }
-  for (var c in entities) if (c.favorite || !favoritesOnly) retval.add(HomeAssistantEntityButton(entity: c));
+  for (var c in entities) retval.add(HomeAssistantEntityButton(entity: c));
   return retval;
 }
 
 class HomeAssistantEntityView extends StatefulWidget {
   final HomeAssistant hass;
-  final bool showFavorites;
   final bool showAll;
-  final bool expandFavorites;
   final bool asGrid;
 
   HomeAssistantEntityView(
     this.hass, {
-    this.showFavorites: true,
     this.showAll: true,
-    this.expandFavorites: false,
     this.asGrid: false,
   });
 
@@ -103,36 +97,8 @@ class _HomeAssistantEntityViewState extends State<HomeAssistantEntityView> {
               margin: const EdgeInsets.only(bottom: 100),
               child: ExpansionPanelList.radio(
                 animationDuration: const Duration(milliseconds: 400),
-                initialOpenPanelValue: widget.expandFavorites ? 'favorites' : 'all',
+                initialOpenPanelValue: 'all',
                 children: <ExpansionPanelRadio>[
-                  if (widget.showFavorites)
-                    ExpansionPanelRadio(
-                      value: 'favorites',
-                      headerBuilder: (_, __) => const ListTile(title: Text('Favorites'), dense: true),
-                      canTapOnHeader: true,
-                      body: widget.asGrid
-                          ? Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.only(bottom: 20, left: 10, right: 10),
-                              child: Wrap(
-                                alignment: WrapAlignment.center,
-                                spacing: 10,
-                                runSpacing: 10,
-                                children: buildHomeAssistantEntityButtons(
-                                  hass,
-                                  favoritesOnly: true,
-                                  filter: filter,
-                                ),
-                              ),
-                            )
-                          : Column(
-                              children: buildHomeAssistantEntityTiles(
-                                hass,
-                                favoritesOnly: true,
-                                filter: filter,
-                              ),
-                            ),
-                    ),
                   if (widget.showAll)
                     ExpansionPanelRadio(
                       value: 'all',
@@ -148,7 +114,6 @@ class _HomeAssistantEntityViewState extends State<HomeAssistantEntityView> {
                                 runSpacing: 10,
                                 children: buildHomeAssistantEntityButtons(
                                   hass,
-                                  favoritesOnly: false,
                                   filter: filter,
                                 ),
                               ),
@@ -156,7 +121,6 @@ class _HomeAssistantEntityViewState extends State<HomeAssistantEntityView> {
                           : Column(
                               children: buildHomeAssistantEntityTiles(
                                 hass,
-                                favoritesOnly: false,
                                 filter: filter,
                               ),
                             ),
@@ -237,12 +201,6 @@ class HomeAssistantEntityTile extends StatelessWidget {
                 width: 20,
                 child: CircularProgressIndicator(),
               ),
-            IconButton(
-              icon: Icon(
-                entity.favorite ? Icons.favorite : Icons.favorite_border,
-              ),
-              onPressed: () => entity.favorite = !entity.favorite,
-            ),
           ],
         ),
       ),
