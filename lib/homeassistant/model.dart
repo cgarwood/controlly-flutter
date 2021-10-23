@@ -12,7 +12,19 @@ import '../settings/model.dart';
 
 enum ComponentConnectionStatus { disconnected, connecting, connected, failed }
 
-enum HomeAssistantEntityType { switchEntity, scriptEntity, climateEntity }
+enum HomeAssistantEntityType {
+  switchEntity,
+  scriptEntity,
+  climateEntity,
+  sensorEntity,
+  lightEntity,
+  mediaPlayerEntity,
+  groupEntity,
+  inputEntity,
+  sceneEntity,
+  automationEntity,
+  cameraEntity
+}
 enum HomeAssistantFanMode { forcedOn, auto }
 enum HomeAssistantHeatMode { heat, cool, auto }
 
@@ -234,9 +246,12 @@ class HomeAssistant {
             var stateData = data?['event']['data'];
             try {
               var entity = entities.firstWhere((e) => e.id == stateData['entity_id']);
+              entity.handleUpdate(stateData['new_state']);
+              /*
               entity.state = stateData['new_state']['state'];
               entity.isOn = stateData['new_state']['state'] == 'on';
               entity.transitioning = false;
+              */
               updateController.add('');
             } catch (e) {
               print(e);
@@ -263,9 +278,10 @@ class HomeAssistant {
               dynamic hae;
               switch (typeString) {
                 case 'switch':
-                  hae = HomeAssistantSwitchEntity(name, id, this, isOn);
+                  hae = HomeAssistantSwitchEntity(id, this, result);
                   break;
                 case 'climate':
+                  /*
                   var currentTemperature = result['attributes']['current_temperature'];
                   var currentSetTemperature = result['attributes']['temperature'];
                   var fanOn = result['attributes']['fan_action'] != 'idle';
@@ -275,21 +291,19 @@ class HomeAssistant {
                   var heatMode = result['attributes']['hvac_action'] == 'heat'
                       ? HomeAssistantHeatMode.heat
                       : HomeAssistantHeatMode.cool;
-
+                */
                   hae = HomeAssistantClimateEntity(
-                    name,
                     id,
                     this,
-                    isOn,
-                    fanMode,
-                    fanOn,
-                    heatMode,
-                    currentSetTemperature: currentSetTemperature,
-                    currentTemperature: currentTemperature,
+                    result,
                   );
                   break;
                 case 'script':
                   hae = HomeAssistantScriptEntity(name, id, this, isOn);
+                  break;
+                case 'sensor':
+                  hae = HomeAssistantEntity(
+                      id: id, type: HomeAssistantEntityType.sensorEntity, parent: this, stateData: result);
                   break;
                 default:
                   // not one of the three entity types we track... abort
@@ -338,13 +352,14 @@ class HomeAssistant {
 
 class HomeAssistantEntity {
   // internal fields
-  String name;
   String id;
   HomeAssistantEntityType type;
   HomeAssistant parent;
+  Map<String, dynamic> stateData;
 
   // Home Assistant entity properties:
   // https://developers.home-assistant.io/docs/core/entity#generic-properties
+  String? name;
   String? state;
   bool? available;
   String? deviceClass;
@@ -369,23 +384,41 @@ class HomeAssistantEntity {
   void notify() => _updateController.add(true);
   void close() => _updateController.close();
 
-  HomeAssistantEntity({
-    required this.name,
-    required this.id,
-    required this.type,
-    required this.parent,
-    required this.isOn,
-  });
+  HomeAssistantEntity({required this.id, required this.type, required this.parent, required this.stateData}) {
+    name = stateData['attributes']?['friendly_name'];
+    state = stateData['state'];
+    available = stateData['attributes']?['available'];
+    deviceClass = stateData['attributes']?['device_class'];
+    entityCategory = stateData['attributes']?['entity_category'];
+    assumedState = stateData['attributes']?['assumed_state'];
+    entityPicture = stateData['attributes']?['entity_picture'];
+    icon = stateData['attributes']?['icon'];
+    isOn = stateData['state'] == 'on';
+    attributes = stateData['attributes'];
+  }
+
+  void handleUpdate(Map<String, dynamic> state) {
+    this.stateData = state;
+    this.state = state['state'];
+    isOn = state['state'] == 'on';
+    attributes = state['attributes'];
+    name = state['attributes']['friendly_name'] ?? id;
+    deviceClass = state['attributes']['device_class'];
+    entityCategory = state['attributes']['entity_category'];
+    icon = state['attributes']['icon'];
+    entityPicture = state['attributes']['entity_picture'];
+    assumedState = state['attributes']['assumed_state'];
+    notify();
+  }
 }
 
 class HomeAssistantSwitchEntity extends HomeAssistantEntity {
-  HomeAssistantSwitchEntity(name, id, parent, isOn)
+  HomeAssistantSwitchEntity(id, parent, stateData)
       : super(
-          name: name,
           id: id,
           parent: parent,
-          isOn: isOn,
           type: HomeAssistantEntityType.switchEntity,
+          stateData: stateData,
         );
 
   String toString() => '$name (${isOn ? 'on' : 'off'})';
@@ -424,30 +457,23 @@ class HomeAssistantSwitchEntity extends HomeAssistantEntity {
 class HomeAssistantClimateEntity extends HomeAssistantEntity {
   int? currentTemperature;
   int? currentSetTemperature;
-  bool fanOn;
+  bool? fanOn;
   HomeAssistantFanMode fanMode = HomeAssistantFanMode.auto;
   HomeAssistantHeatMode heatMode = HomeAssistantHeatMode.cool;
 
   HomeAssistantClimateEntity(
-    name,
     id,
     parent,
-    isOn,
-    this.fanMode,
-    this.fanOn,
-    this.heatMode, {
-    this.currentTemperature,
-    this.currentSetTemperature,
-  }) : super(
-          name: name,
+    stateData,
+  ) : super(
           id: id,
           type: HomeAssistantEntityType.switchEntity,
           parent: parent,
-          isOn: isOn,
+          stateData: stateData,
         );
 
   String toString() {
-    String retval = name;
+    String retval = name ?? '';
     if (currentTemperature != null) retval += ' • $currentTemperature';
     if (currentSetTemperature != null) retval += ' (${currentSetTemperature ?? ''})';
     return retval;
@@ -488,12 +514,11 @@ class HomeAssistantClimateEntity extends HomeAssistantEntity {
 }
 
 class HomeAssistantScriptEntity extends HomeAssistantSwitchEntity {
-  HomeAssistantScriptEntity(name, id, parent, isOn)
+  HomeAssistantScriptEntity(name, id, parent, stateData)
       : super(
-          name,
           id,
           parent,
-          isOn,
+          stateData,
         ) {
     type = HomeAssistantEntityType.scriptEntity;
   }

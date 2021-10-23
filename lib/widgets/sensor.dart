@@ -28,7 +28,7 @@ class _SensorWidgetState extends State<SensorWidget> {
           children: <Widget>[
             Text(widget.entityId),
             Text(entity.state ?? ''),
-            Text(entity.available.toString()),
+            Text(entity.available ?? true ? 'available' : 'unavailable'),
           ],
         ),
       ),
