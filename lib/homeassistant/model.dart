@@ -160,19 +160,23 @@ class HomeAssistant {
 
   Future<void> refreshTokens() async {
     var uri = Uri(scheme: settings.ssl ? 'https' : 'http', host: settings.ip, port: settings.port, path: '/auth/token');
-    var res = await http.post(uri, body: {
-      'grant_type': 'refresh_token',
-      'refresh_token': settings.refreshToken,
-      'client_id': Config.hassClientId,
-    });
-    if (res.statusCode != 200) return;
+    try {
+      var res = await http.post(uri, body: {
+        'grant_type': 'refresh_token',
+        'refresh_token': settings.refreshToken,
+        'client_id': Config.hassClientId,
+      });
+      if (res.statusCode != 200) return;
 
-    var data = json.decode(res.body);
-    settings.expiringAccessToken = data['access_token'];
-    settings.expiresIn = Duration(seconds: data['expires_in'] ?? 0);
-    settings.tokenTime = DateTime.now();
-    settings.save();
-    return;
+      var data = json.decode(res.body);
+      settings.expiringAccessToken = data['access_token'];
+      settings.expiresIn = Duration(seconds: data['expires_in'] ?? 0);
+      settings.tokenTime = DateTime.now();
+      settings.save();
+      return;
+    } catch (e) {
+      print(e);
+    }
   }
 
   void notify() {
