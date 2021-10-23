@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:controlly/homeassistant/entities/switch.dart';
+import 'package:controlly/homeassistant/entity.dart';
 import 'package:flutter/material.dart';
 
 import './homeassistant.dart';
@@ -174,7 +176,7 @@ class HomeAssistantEntityTile extends StatelessWidget {
         subtitle: Text('# ${entity.id}'),
         onTap: () async {
           if (entity is HomeAssistantSwitchEntity) {
-            (entity as HomeAssistantSwitchEntity).flipSwitch();
+            (entity as HomeAssistantSwitchEntity).toggle();
           } else {
             var newEntity =
                 await Navigator.of(context).push<HomeAssistantClimateEntity>(MaterialPageRoute(builder: (context) {
@@ -189,11 +191,11 @@ class HomeAssistantEntityTile extends StatelessWidget {
           }
         },
         // onLongPress: () => store.hass.releaseCueList(entity.id),
-        selected: entity.isOn,
+        selected: entity.state == 'on',
         leading: (entity is HomeAssistantSwitchEntity)
             ? Switch(
-                onChanged: (bool b) => (entity as HomeAssistantSwitchEntity).flipSwitch(b),
-                value: entity.isOn,
+                onChanged: (bool b) => (entity as HomeAssistantSwitchEntity).toggle(b),
+                value: entity.state == 'on',
               )
             : null,
         trailing: Row(
@@ -505,7 +507,7 @@ class _HomeAssistantSwitchEntityButtonState extends State<HomeAssistantSwitchEnt
   @override
   Widget build(BuildContext context) {
     return Switch(
-      onChanged: (bool b) => setState(() => widget.entity.flipSwitch(b)),
+      onChanged: (bool b) => setState(() => widget.entity.toggle(b)),
       value: widget.entity.isOn,
     );
   }
