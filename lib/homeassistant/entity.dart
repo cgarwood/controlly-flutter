@@ -57,7 +57,7 @@ class HomeAssistantEntity {
     domain = id.split('.')[0];
     name = computeStateName(stateData);
     state = stateData['state'];
-    available = stateData['state'] != "unavailable";
+    available = !UNAVAILABLE_STATES.contains(stateData['state']);
     deviceClass = stateData['attributes']['device_class'];
     entityCategory = stateData['attributes']['entity_category'];
     assumedState = stateData['attributes']['assumed_state'] ?? false;
@@ -70,7 +70,7 @@ class HomeAssistantEntity {
     stateData = newState;
     state = newState['state'];
     attributes = newState['attributes'];
-    available = newState['state'] != "unavailable";
+    available = !UNAVAILABLE_STATES.contains(stateData['state']);
     name = computeStateName(stateData);
     deviceClass = newState['attributes']['device_class'];
     entityCategory = newState['attributes']['entity_category'];
