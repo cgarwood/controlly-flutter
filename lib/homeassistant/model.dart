@@ -343,8 +343,15 @@ class HomeAssistantEntity {
   HomeAssistantEntityType type;
   HomeAssistant parent;
 
+  // Home Assistant entity properties:
+  // https://developers.home-assistant.io/docs/core/entity#generic-properties
   String? state;
   bool? available;
+  String? deviceClass;
+  String? entityCategory;
+  bool? assumedState;
+  String? entityPicture;
+  String? icon;
 
   bool isOn = false;
   Map attributes = {};
