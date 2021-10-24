@@ -17,6 +17,7 @@ enum HomeAssistantEntityType {
   cameraEntity
 }
 
+// ignore: constant_identifier_names
 const UNAVAILABLE_STATES = ['unavailable', 'unknown'];
 
 class HomeAssistantEntity {
