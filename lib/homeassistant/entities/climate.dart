@@ -20,7 +20,7 @@ class HomeAssistantClimateEntity extends HomeAssistantEntity {
     stateData,
   ) : super(
           id: id,
-          type: HomeAssistantEntityType.switchEntity,
+          type: HomeAssistantEntityType.climateEntity,
           parent: parent,
           stateData: stateData,
         ) {
