@@ -5,6 +5,7 @@ import 'package:controlly/store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:controlly/widgets/sensor.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 void main() {
   runApp(const MyApp());
@@ -81,15 +82,15 @@ class _ControllyHomeState extends State<ControllyHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(widget.title),
-      //   actions: [
-      //     IconButton(
-      //       icon: const Icon(Icons.settings),
-      //       onPressed: () => launch(context, const SettingsPage()),
-      //     ),
-      //   ],
-      // ),
+      appBar: AppBar(
+        title: Text(widget.title),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () => launch(context, const SettingsPage()),
+          ),
+        ],
+      ),
       body: FutureBuilder<bool>(
         future: settingsManager.ready,
         builder: (context, snapshot) {
@@ -132,38 +133,9 @@ class _ControllyHomeState extends State<ControllyHome> {
                       ),
                     ),
 
-                    // left sidebar
-                    Positioned(
-                      left: 0,
-                      top: 0,
-                      bottom: 0,
-                      width: 70,
-                      child: Container(
-                        color: Colors.blueAccent.withAlpha(100),
-                      ),
-                    ),
-
-                    // bottom notification bar
-                    Positioned(
-                      left: 0,
-                      bottom: 0,
-                      right: 0,
-                      height: 60,
-                      child: Container(
-                        color: Colors.red.withAlpha(100),
-                        child: IconButton(
-                          iconSize: 60,
-                          icon: const Icon(
-                            Icons.settings,
-                          ),
-                          onPressed: () => launch(context, const SettingsPage()),
-                        ),
-                      ),
-                    ),
-
                     // scrollable widget area
                     Positioned(
-                      left: 70,
+                      left: 24,
                       top: 0,
                       bottom: 0,
                       right: 0,
@@ -201,7 +173,43 @@ class _ControllyHomeState extends State<ControllyHome> {
           }
         },
       ),
+      bottomNavigationBar:
+          BottomNavigationBar(currentIndex: 0, type: BottomNavigationBarType.fixed, items: buildBottomBarItems()),
       // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  List<BottomNavigationBarItem> buildBottomBarItems() {
+    // This list will eventually be pulled from the UI config file
+    // once that is ready
+    const items = {
+      'home': {
+        'icon': 'home',
+        'title': 'Home',
+      },
+      'lighting': {
+        'icon': 'lightbulb',
+        'title': 'Lighting',
+      },
+      'climate': {
+        'icon': 'thermometer',
+        'title': 'Climate',
+      },
+      'maintenance': {
+        'icon': 'wrench',
+        'title': 'Maintenance',
+      },
+    };
+
+    var navBarItems = <BottomNavigationBarItem>[];
+
+    items.forEach((key, value) {
+      navBarItems.add(BottomNavigationBarItem(
+        icon: Icon(MdiIcons.fromString(value['icon'] ?? 'folder')),
+        label: value['title'],
+      ));
+    });
+
+    return navBarItems;
   }
 }

@@ -16,7 +16,8 @@ dependencies:
   # snapdart: ^0.1.4
   url_launcher:
   http:
-  uni_links: 
+  uni_links:
+  material_design_icons_flutter: 5.0.6295
 
 dev_dependencies:
   flutter_test:
