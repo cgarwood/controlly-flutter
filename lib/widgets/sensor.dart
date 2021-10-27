@@ -1,6 +1,8 @@
 import 'package:controlly/homeassistant/entity.dart';
 import 'package:controlly/store.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import '../utils/helpers.dart';
 
 class SensorWidget extends StatefulWidget {
   final HomeAssistantEntity entity;
@@ -67,22 +69,40 @@ class _SensorWidgetState extends State<SensorWidget> {
                 ? Colors.green
                 : Colors.red,
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          // will take up as much of the column as it can
-          // if you want this top state widget to take up a specific amount of space,
-          // you'll need to replace this with a sized box and then play with
-          // the positioning of the other items in the Column
-          Expanded(
-            child: Center(
-              child: entityState(), // see above
+      child: DefaultTextStyle(
+        style: const TextStyle(
+          color: Colors.white,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            // will take up as much of the column as it can
+            // if you want this top state widget to take up a specific amount of space,
+            // you'll need to replace this with a sized box and then play with
+            // the positioning of the other items in the Column
+            Expanded(
+              child: Center(
+                child: entityState(), // see above
+              ),
             ),
-          ),
-          Text(entity.name, textAlign: TextAlign.left),
-          Text(entity.available ? 'available' : 'unavailable'),
-        ],
+            Text(
+              entity.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w100,
+              ),
+            ),
+            Text(
+              entity.deviceClass?.toTitleCase() ?? '',
+              style: const TextStyle(
+                fontSize: 10,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
