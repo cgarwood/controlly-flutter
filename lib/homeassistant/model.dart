@@ -208,6 +208,7 @@ class HomeAssistant {
   void handler(WSMessage message) {
     print('Homeassistant Message Handler');
     print(message.rawString);
+    bool reloadStates = false;
     var data = message.rawMap;
     var requestId = data?['id'] ?? false;
     if (requestId != false && !requests[requestId]?['completer'].isCompleted) {
@@ -236,6 +237,7 @@ class HomeAssistant {
               entity.handleUpdate(stateData['new_state']);
               updateController.add('');
             } on StateError {
+              reloadStates = true;
               print('No entity handler for ${stateData['entity_id']}');
             } catch (e) {
               print(e);
@@ -257,7 +259,6 @@ class HomeAssistant {
 
               var typeString = id.split('.').first;
               String name = result['attributes']?['friendly_name'] ?? id;
-              bool isOn = result['state'] == 'on';
 
               dynamic hae;
               switch (typeString) {
@@ -272,7 +273,7 @@ class HomeAssistant {
                   );
                   break;
                 case 'script':
-                  hae = HomeAssistantScriptEntity(name, id, this, isOn);
+                  hae = HomeAssistantScriptEntity(name, id, this, result);
                   break;
                 case 'sensor':
                   hae = HomeAssistantSensorEntity(id, this, result);
@@ -292,6 +293,7 @@ class HomeAssistant {
         }
         break;
     }
+    if (reloadStates) getStates();
   }
 
   // HomeAssistant uses message rawMap, not message/data format

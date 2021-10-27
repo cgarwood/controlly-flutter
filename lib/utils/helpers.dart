@@ -1,5 +1,22 @@
 import 'package:flutter/material.dart';
 
+extension StringTitleCase on String {
+  String toTitleCase() {
+    return titleCase(this);
+  }
+}
+
+String titleCase(String s) {
+  return s.replaceAllMapped(RegExp(r'^(\w)|(\s)(\w)'), (match) {
+    if (match.group(1) != null) {
+      return match.group(1)!.toUpperCase();
+    } else if (match.group(3) != null) {
+      return match.group(2)! + match.group(3)!.toUpperCase();
+    }
+    return '';
+  });
+}
+
 String enumValueToString(var e) {
   return e.toString().split('.').last;
 }

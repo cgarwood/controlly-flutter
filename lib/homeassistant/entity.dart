@@ -83,12 +83,12 @@ class HomeAssistantEntity {
 }
 
 class HomeAssistantSwitchableEntity extends HomeAssistantEntity {
-  HomeAssistantSwitchableEntity(
-      {required String id,
-      required HomeAssistantEntityType type,
-      required HomeAssistant parent,
-      required Map<String, dynamic> stateData})
-      : super(id: id, type: type, parent: parent, stateData: stateData);
+  HomeAssistantSwitchableEntity({
+    required String id,
+    required HomeAssistantEntityType type,
+    required HomeAssistant parent,
+    required Map<String, dynamic> stateData,
+  }) : super(id: id, type: type, parent: parent, stateData: stateData);
 
   bool get isOn => state == 'on';
   set isOn(bool b) {
