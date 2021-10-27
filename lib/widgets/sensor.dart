@@ -1,12 +1,11 @@
 import 'package:controlly/homeassistant/entity.dart';
-import 'package:controlly/store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import '../utils/helpers.dart';
 
 class SensorWidget extends StatefulWidget {
   final HomeAssistantEntity entity;
-  SensorWidget({Key? key, required this.entity}) : super(key: key);
+  const SensorWidget({Key? key, required this.entity}) : super(key: key);
 
   @override
   _SensorWidgetState createState() => _SensorWidgetState();
@@ -90,11 +89,10 @@ class _SensorWidgetState extends State<SensorWidget> {
   Widget build(BuildContext context) {
     // var entity = store.ha!.entities.firstWhere((e) => e.id == widget.entityId);
 
-    // changed sized box and decorated box to just a Container since it does both
     return Container(
       width: 128,
       height: 128,
-      padding: const EdgeInsets.all(8), // added padding
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(10)), // rounded corners
         color: !entity.available

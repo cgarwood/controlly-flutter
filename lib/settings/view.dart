@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:controlly/settings/model.dart';
 
 final Map configItems = {
-  // 'haUrl': {'type': 'text', 'name': 'Home Assistant URL', 'description': 'URL to your Home Assistant instance'},
   'haHost': {
     'type': 'text',
     'name': 'Home Assistant Hostname',

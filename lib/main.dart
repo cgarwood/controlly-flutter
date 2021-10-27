@@ -63,7 +63,7 @@ class _ControllyHomeState extends State<ControllyHome> {
 
   void checkSettings() async {
     await settingsManager.ready;
-    if (settingsManager.getItem('haHost')?.isNotEmpty) {
+    if (settingsManager.getItem('haHost')?.isNotEmpty ?? false) {
       // attempt to connect
       store.ha?.destroy();
       store.ha = HomeAssistant(HomeAssistantSettings(
@@ -145,25 +145,6 @@ class _ControllyHomeState extends State<ControllyHome> {
                           runSpacing: 10,
                           children: [
                             for (var entity in store.ha!.entities) SensorWidget(entity: entity),
-                            /* Container(
-                                width: 200,
-                                height: 100,
-                                color: Colors.blue,
-                                child: ListView(
-                                  children: [
-                                    Icon(entity.isOn ? Icons.lightbulb : Icons.lightbulb_outline),
-                                    Text(entity.name),
-                                    for (var key in entity.attributes.keys)
-                                      Column(
-                                        children: [
-                                          Text(key + ':'),
-                                          Text(entity.attributes[key].toString()),
-                                          const SizedBox(height: 10),
-                                        ],
-                                      )
-                                  ],
-                                ),
-                              ) */
                           ],
                         ),
                       ),
@@ -180,7 +161,6 @@ class _ControllyHomeState extends State<ControllyHome> {
         type: BottomNavigationBarType.fixed,
         items: buildBottomBarItems(),
       ),
-      // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 
