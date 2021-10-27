@@ -1,41 +1,88 @@
+import 'package:controlly/homeassistant/entity.dart';
 import 'package:controlly/store.dart';
 import 'package:flutter/material.dart';
 
 class SensorWidget extends StatefulWidget {
-  String entityId;
-
-  SensorWidget({Key? key, required this.entityId});
+  final HomeAssistantEntity entity;
+  SensorWidget({Key? key, required this.entity}) : super(key: key);
 
   @override
   _SensorWidgetState createState() => _SensorWidgetState();
 }
 
 class _SensorWidgetState extends State<SensorWidget> {
+  HomeAssistantEntity get entity => widget.entity;
+
+  // will return a text widget or an icon widget
+  // use this to determine which kind of widget you want to be the
+  // main state widget.
+  Widget entityState() {
+    switch (entity.deviceClass) {
+
+      // will use text and append a degree symbol
+      case 'temperature':
+        return Text(
+          (entity.state ?? '') + '°',
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+          ),
+        );
+      case 'humidity':
+        return Text(
+          (entity.state ?? '') + '%',
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+          ),
+        );
+      default:
+        return Text(
+          (entity.state ?? ''),
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+          ),
+        );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    var entity = store.ha!.entities.firstWhere((e) => e.id == widget.entityId);
-    return SizedBox(
+    // var entity = store.ha!.entities.firstWhere((e) => e.id == widget.entityId);
+
+    // changed sized box and decorated box to just a Container since it does both
+    return Container(
       width: 128,
       height: 128,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: !entity.available
-              ? Colors.grey[300]
-              : entity.state == 'on'
-                  ? Colors.green
-                  : Colors.red,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            const SizedBox(height: 8),
-            Text(entity.name, textAlign: TextAlign.center),
-            const SizedBox(height: 8),
-            Text(entity.state ?? '',
-                textAlign: TextAlign.center, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            Text(entity.available ? 'available' : 'unavailable'),
-          ],
-        ),
+      padding: const EdgeInsets.all(8), // added padding
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(Radius.circular(10)), // rounded corners
+        color: !entity.available
+            ? Colors.grey[300]
+            : entity.state == 'on'
+                ? Colors.green
+                : Colors.red,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          // will take up as much of the column as it can
+          // if you want this top state widget to take up a specific amount of space,
+          // you'll need to replace this with a sized box and then play with
+          // the positioning of the other items in the Column
+          Expanded(
+            child: Center(
+              child: entityState(), // see above
+            ),
+          ),
+          Text(entity.name, textAlign: TextAlign.left),
+          Text(entity.available ? 'available' : 'unavailable'),
+        ],
       ),
     );
   }

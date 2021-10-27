@@ -85,17 +85,27 @@ class _SettingsPageState extends State<SettingsPage> {
           String key = configItems.keys.elementAt(index);
           Map configItem = configItems[key];
           if (configItem['type'] == "text") {
-            return ListTile(
-              title: Text(configItem['name']),
-              subtitle: Text(settingsManager.getItem(key) ?? ''),
-              enabled: true,
-              onTap: () async {
-                formValue = settingsManager.getItem(key);
-                var newVal = await _showConfigDialog(key, settingsManager.getItem(key) ?? '');
-                if (newVal != null) await settingsManager.setItem(key, newVal);
-                refresh();
+            return TextFormField(
+              decoration: InputDecoration(
+                border: const UnderlineInputBorder(),
+                labelText: configItem['name'],
+                helperText: configItem['description'],
+              ),
+              onChanged: (newVal) async {
+                await settingsManager.setItem(key, newVal);
               },
             );
+            // return ListTile(
+            //   title: Text(configItem['name']),
+            //   subtitle: Text(settingsManager.getItem(key) ?? ''),
+            //   enabled: true,
+            //   onTap: () async {
+            //     formValue = settingsManager.getItem(key);
+            //     var newVal = await _showConfigDialog(key, settingsManager.getItem(key) ?? '');
+            //     if (newVal != null) await settingsManager.setItem(key, newVal);
+            //     refresh();
+            //   },
+            // );
           }
           if (configItem['type'] == "bool") {
             return SwitchListTile(
