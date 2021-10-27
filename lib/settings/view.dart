@@ -23,6 +23,11 @@ final Map configItems = {
     'type': 'bool',
     'name': 'Verify SSL Certificates',
     'description': 'Require valid (trusted) SSL certificates'
+  },
+  'configYaml': {
+    'type': 'text',
+    'name': 'Controlly Configuration URL',
+    'description': 'URL to pull Controlly configuration from'
   }
 };
 
@@ -91,6 +96,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 labelText: configItem['name'],
                 helperText: configItem['description'],
               ),
+              initialValue: settingsManager.getItem(key) ?? '',
               onChanged: (newVal) async {
                 await settingsManager.setItem(key, newVal);
               },
