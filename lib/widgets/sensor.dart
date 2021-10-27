@@ -15,31 +15,65 @@ class SensorWidget extends StatefulWidget {
 class _SensorWidgetState extends State<SensorWidget> {
   HomeAssistantEntity get entity => widget.entity;
 
-  // will return a text widget or an icon widget
+  // should return a text widget or an icon widget
   // use this to determine which kind of widget you want to be the
   // main state widget.
   Widget entityState() {
-    switch (entity.deviceClass) {
+    switch (entity.type) {
+      case HomeAssistantEntityType.sensorEntity:
+        switch (entity.deviceClass) {
+          // will use text and append a degree symbol
+          case 'temperature':
+            return Text(
+              (entity.state ?? '') + '°',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
+            );
+          case 'humidity':
+          case 'battery':
+            return Text(
+              (entity.state ?? '') + '%',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
+            );
+          default:
+            // TODO: return an icon if the state is 'charging' or 'discharging'
+            return Text(
+              (entity.state ?? ''),
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
+            );
+        }
+      case HomeAssistantEntityType.climateEntity:
+        var heat = const Icon(
+          Icons.fireplace_outlined,
+          color: Colors.white,
+        );
+        var cool = const Icon(
+          Icons.ac_unit,
+          color: Colors.white,
+        );
+        switch (entity.state) {
+          case 'heat':
+            return heat;
+          case 'cool':
+            return cool;
+          default:
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [heat, cool],
+            );
+        }
 
-      // will use text and append a degree symbol
-      case 'temperature':
-        return Text(
-          (entity.state ?? '') + '°',
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontSize: 30,
-            fontWeight: FontWeight.bold,
-          ),
-        );
-      case 'humidity':
-        return Text(
-          (entity.state ?? '') + '%',
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontSize: 30,
-            fontWeight: FontWeight.bold,
-          ),
-        );
       default:
         return Text(
           (entity.state ?? ''),
@@ -96,7 +130,7 @@ class _SensorWidgetState extends State<SensorWidget> {
               ),
             ),
             Text(
-              entity.deviceClass?.toTitleCase() ?? '',
+              entity.deviceClass?.toTitleCase() ?? entity.domain.toTitleCase(),
               style: const TextStyle(
                 fontSize: 10,
               ),

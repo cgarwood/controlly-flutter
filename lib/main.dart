@@ -50,7 +50,7 @@ class _ControllyHomeState extends State<ControllyHome> {
     // store.ha.updates.listen()
     super.initState();
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
     checkSettings();
   }
