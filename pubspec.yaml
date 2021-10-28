@@ -19,6 +19,7 @@ dependencies:
   uni_links:
   material_design_icons_flutter: 5.0.6295
   yaml: ^3.1.0
+  collection: ^1.15.0
 
 dev_dependencies:
   flutter_test:

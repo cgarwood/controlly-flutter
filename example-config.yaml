@@ -4,6 +4,15 @@ pages:
   home:
     title: Dashboard
     icon: home
+    widgets:
+      - type: sensor
+        entity_id: sensor.living_room_multisensor_temperature
+      - type: sensor
+        entity_id: sensor.master_bedroom_multisensor_temperature
+      - type: sensor
+        entity_id: sensor.nursery_multisensor_temperature
+      - type: sensor
+        entity_id: sensor.garage_multisensor_temperature
 
   lights:
     title: Lighting
@@ -12,6 +21,13 @@ pages:
   climate:
     title: Climate
     icon: thermometer
+    widgets:
+      - type: sensor
+        entity_id: sensor.living_room_multisensor_relative_humidity
+      - type: sensor
+        entity_id: sensor.master_bedroom_multisensor_relative_humidity
+      - type: sensor
+        entity_id: sensor.nursery_multisensor_relative_humidity
 
   security:
     title: Security

@@ -87,8 +87,6 @@ class _SensorWidgetState extends State<SensorWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // var entity = store.ha!.entities.firstWhere((e) => e.id == widget.entityId);
-
     return Card(
       margin: EdgeInsets.all(1),
       child: Container(
