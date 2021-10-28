@@ -27,7 +27,7 @@ class _SensorWidgetState extends State<SensorWidget> {
               (entity.state ?? '') + '°',
               textAlign: TextAlign.center,
               style: const TextStyle(
-                fontSize: 30,
+                fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             );
@@ -37,7 +37,7 @@ class _SensorWidgetState extends State<SensorWidget> {
               (entity.state ?? '') + '%',
               textAlign: TextAlign.center,
               style: const TextStyle(
-                fontSize: 30,
+                fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             );
@@ -47,7 +47,7 @@ class _SensorWidgetState extends State<SensorWidget> {
               (entity.state ?? ''),
               textAlign: TextAlign.center,
               style: const TextStyle(
-                fontSize: 30,
+                fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             );
@@ -78,7 +78,7 @@ class _SensorWidgetState extends State<SensorWidget> {
           (entity.state ?? ''),
           textAlign: TextAlign.center,
           style: const TextStyle(
-            fontSize: 30,
+            fontSize: 24,
             fontWeight: FontWeight.bold,
           ),
         );
@@ -89,51 +89,53 @@ class _SensorWidgetState extends State<SensorWidget> {
   Widget build(BuildContext context) {
     // var entity = store.ha!.entities.firstWhere((e) => e.id == widget.entityId);
 
-    return Container(
-      width: 128,
-      height: 128,
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(Radius.circular(10)), // rounded corners
-        color: !entity.available
-            ? Colors.grey[300]
-            : entity.state == 'on'
-                ? Colors.green
-                : Colors.red,
-      ),
-      child: DefaultTextStyle(
-        style: const TextStyle(
-          color: Colors.white,
+    return Card(
+      margin: EdgeInsets.all(1),
+      child: Container(
+        width: 128,
+        height: 128,
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: !entity.available
+              ? Colors.grey[300]
+              : entity.state == 'on'
+                  ? Colors.green
+                  : Colors.red,
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            // will take up as much of the column as it can
-            // if you want this top state widget to take up a specific amount of space,
-            // you'll need to replace this with a sized box and then play with
-            // the positioning of the other items in the Column
-            Expanded(
-              child: Center(
-                child: entityState(), // see above
+        child: DefaultTextStyle(
+          style: const TextStyle(
+            color: Colors.white,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              // will take up as much of the column as it can
+              // if you want this top state widget to take up a specific amount of space,
+              // you'll need to replace this with a sized box and then play with
+              // the positioning of the other items in the Column
+              Expanded(
+                child: Center(
+                  child: entityState(), // see above
+                ),
               ),
-            ),
-            Text(
-              entity.name,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w300,
+              Text(
+                entity.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w300,
+                ),
               ),
-            ),
-            Text(
-              entity.deviceClass?.toTitleCase() ?? entity.domain.toTitleCase(),
-              style: const TextStyle(
-                fontSize: 10,
+              Text(
+                entity.deviceClass?.toTitleCase() ?? entity.domain.toTitleCase(),
+                style: const TextStyle(
+                  fontSize: 10,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
