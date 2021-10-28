@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:async';
 
 import 'package:controlly/homeassistant/entities/climate.dart';
+import 'package:controlly/homeassistant/entities/light.dart';
 import 'package:controlly/homeassistant/entities/sensor.dart';
 import 'package:controlly/homeassistant/entities/switch.dart';
 import 'package:controlly/homeassistant/entity.dart';
@@ -267,6 +268,13 @@ class HomeAssistant {
                   break;
                 case 'climate':
                   hae = HomeAssistantClimateEntity(
+                    id,
+                    this,
+                    result,
+                  );
+                  break;
+                case 'light':
+                  hae = HomeAssistantLightEntity(
                     id,
                     this,
                     result,
