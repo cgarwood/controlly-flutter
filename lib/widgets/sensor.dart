@@ -100,7 +100,9 @@ class _SensorWidgetState extends State<SensorWidget> {
               ? Colors.grey[300]
               : entity.state == 'on'
                   ? Colors.green
-                  : Colors.red,
+                  : entity.state == 'off'
+                      ? Colors.red
+                      : Colors.cyan[800],
         ),
         child: DefaultTextStyle(
           style: const TextStyle(
