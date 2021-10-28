@@ -123,8 +123,8 @@ class _SensorWidgetState extends State<SensorWidget> {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w100,
+                fontSize: 15,
+                fontWeight: FontWeight.w300,
               ),
             ),
             Text(

@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
       title: 'Controlly',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        fontFamily: 'Roboto',
       ),
       home: const ControllyHome(title: 'Controlly'),
     );
