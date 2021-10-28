@@ -1,0 +1,22 @@
+# Controlly Example Dashboard Configuration
+
+pages:
+  home:
+    title: Dashboard
+    icon: home
+
+  lights:
+    title: Lighting
+    icon: lamp
+
+  climate:
+    title: Climate
+    icon: thermometer
+
+  security:
+    title: Security
+    icon: lock
+
+  maintenance:
+    title: Maintenance
+    icon: wrench
