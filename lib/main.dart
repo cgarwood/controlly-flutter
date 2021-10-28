@@ -2,6 +2,7 @@ import 'package:controlly/homeassistant/homeassistant.dart';
 import 'package:controlly/settings/model.dart';
 import 'package:controlly/settings/view.dart';
 import 'package:controlly/store.dart';
+import 'package:controlly/user_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:controlly/widgets/sensor.dart';
@@ -73,8 +74,12 @@ class _ControllyHomeState extends State<ControllyHome> {
         longLivedToken: settingsManager.getItem('haToken'),
       ));
       await store.ha!.connect();
+    }
+    // load user configuration
+    if (await loadUserConfig()) {
       refresh();
     }
+    ;
   }
 
   void haUpdateHandler() {}
@@ -85,6 +90,10 @@ class _ControllyHomeState extends State<ControllyHome> {
       appBar: AppBar(
         title: Text(widget.title),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () => loadUserConfig().then((_) => refresh()),
+          ),
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () => launch(context, const SettingsPage()),
@@ -156,42 +165,23 @@ class _ControllyHomeState extends State<ControllyHome> {
           }
         },
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0,
-        type: BottomNavigationBarType.fixed,
-        items: buildBottomBarItems(),
-      ),
+      bottomNavigationBar: (store.userConfig['pages'] ?? []).length > 2
+          ? BottomNavigationBar(
+              currentIndex: 0,
+              type: BottomNavigationBarType.fixed,
+              items: buildBottomBarItems(),
+            )
+          : null,
     );
   }
 
   List<BottomNavigationBarItem> buildBottomBarItems() {
-    // This list will eventually be pulled from the UI config file
-    // once that is ready
-    const items = {
-      'home': {
-        'icon': 'home',
-        'title': 'Home',
-      },
-      'lighting': {
-        'icon': 'lightbulb',
-        'title': 'Lighting',
-      },
-      'climate': {
-        'icon': 'thermometer',
-        'title': 'Climate',
-      },
-      'maintenance': {
-        'icon': 'wrench',
-        'title': 'Maintenance',
-      },
-    };
-
     var navBarItems = <BottomNavigationBarItem>[];
-
-    items.forEach((key, value) {
+    if (store.userConfig['pages'] == null) return [];
+    store.userConfig['pages'].forEach((key, page) {
       navBarItems.add(BottomNavigationBarItem(
-        icon: Icon(MdiIcons.fromString(value['icon'] ?? 'folder')),
-        label: value['title'],
+        icon: Icon(MdiIcons.fromString(page['icon'] ?? 'folder')),
+        label: page['title'] ?? key,
       ));
     });
 

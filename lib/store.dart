@@ -5,6 +5,8 @@ class Store {
   HomeAssistant? ha;
   // late Snapcast sc;
 
+  Map userConfig = {};
+
   Store();
 }
 
