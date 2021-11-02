@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:collection/collection.dart';
 import 'package:controlly/store.dart';
-import './utils/helpers.dart';
 
 class PageWidget extends StatefulWidget {
   final Map<dynamic, dynamic> pageConfig;
@@ -20,6 +19,7 @@ class _PageWidgetState extends State<PageWidget> {
     var page = widget.pageConfig;
 
     var widgets = page['widgets'] ?? [];
+    var tileSize = store.userConfig['tileSize'] ?? 128;
 
     return Stack(
       children: [
@@ -43,8 +43,8 @@ class _PageWidgetState extends State<PageWidget> {
           right: 0,
           child: SingleChildScrollView(
             child: LayoutGrid(
-                columnSizes: repeat(page['columns'] ?? 6, [128.px]),
-                rowSizes: repeat(page['rows'] ?? 6, [128.px]),
+                columnSizes: repeat((page['columns'] ?? 6) * 2, [FixedTrackSize(tileSize / 2)]),
+                rowSizes: repeat((page['rows'] ?? 6) * 2, [FixedTrackSize(tileSize / 2)]),
                 children: processWidgets(widgets)),
           ),
         ),
@@ -59,10 +59,10 @@ class _PageWidgetState extends State<PageWidget> {
           var entity = store.ha!.entities.firstWhereOrNull((e) => e.id == value['entity_id']);
           if (entity != null) {
             return SensorWidget(entity: entity).withGridPlacement(
-                columnStart: value['col'],
-                rowStart: value['row'],
-                columnSpan: value['width'] ?? 1,
-                rowSpan: value['height'] ?? 1);
+                columnStart: ((value['col'] ?? 1) * 2 - 1).abs(),
+                rowStart: ((value['row'] ?? 1) * 2 - 1).abs(),
+                columnSpan: ((value['width'] ?? 1) * 2).round(),
+                rowSpan: ((value['height'] ?? 1) * 2).round());
           }
           return Text('Entity not found: ${value['entity_id']}');
       }
