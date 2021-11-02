@@ -88,7 +88,7 @@ class _SensorWidgetState extends State<SensorWidget> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.all(1),
+      margin: EdgeInsets.all(8),
       child: Container(
         width: 128,
         height: 128,

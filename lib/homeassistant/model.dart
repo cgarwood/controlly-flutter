@@ -207,8 +207,8 @@ class HomeAssistant {
   }
 
   void handler(WSMessage message) {
-    print('Homeassistant Message Handler');
-    print(message.rawString);
+    // print('Homeassistant Message Handler');
+    // print(message.rawString);
     bool reloadStates = false;
     var data = message.rawMap;
     var requestId = data?['id'] ?? false;
@@ -241,7 +241,7 @@ class HomeAssistant {
               reloadStates = true;
               print('No entity handler for ${stateData['entity_id']}');
             } catch (e) {
-              print(e);
+              // print(e);
             }
             break;
         }

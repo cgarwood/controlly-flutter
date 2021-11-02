@@ -183,8 +183,8 @@ class WS {
   }
 
   void handler(data) {
-    print('WS $socketId $niceName: message received.');
-    print(data);
+    // print('WS $socketId $niceName: message received.');
+    // print(data);
     var message = WSMessage.fromString(data);
     _outputController.add(message);
   }
