@@ -53,26 +53,8 @@ class _PageWidgetState extends State<PageWidget> {
   }
 
   processWidgets(widgets) {
-    double tileSpacing = (store.userConfig['general']['tile_spacing'] ?? 8).toDouble();
-
     return widgets.map<Widget>((value) {
       switch (value['type']) {
-        case 'row':
-          return Container(
-              margin: EdgeInsets.only(top: tileSpacing, bottom: tileSpacing),
-              color: (value['background_color'] != null) ? value['background_color'].toString().toColor() : Colors.red,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                children: processWidgets(value['widgets']),
-              ));
-        case 'column':
-          return Container(
-              color: (value['background_color'] != null) ? value['background_color'].toString().toColor() : Colors.red,
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: processWidgets(value['widgets']),
-              ));
         default:
           var entity = store.ha!.entities.firstWhereOrNull((e) => e.id == value['entity_id']);
           if (entity != null) {
