@@ -1,11 +1,13 @@
 import 'package:controlly/homeassistant/entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:yaml/yaml.dart';
 import '../utils/helpers.dart';
 
 class SensorWidget extends StatefulWidget {
   final HomeAssistantEntity entity;
-  const SensorWidget({Key? key, required this.entity}) : super(key: key);
+  final YamlMap config;
+  const SensorWidget({Key? key, required this.entity, required this.config}) : super(key: key);
 
   @override
   _SensorWidgetState createState() => _SensorWidgetState();

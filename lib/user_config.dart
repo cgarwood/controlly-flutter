@@ -12,7 +12,6 @@ Future<bool> loadUserConfig() async {
   var response = await http.get(Uri.parse(configPath));
   if (response.statusCode == 200) {
     store.userConfig = loadYaml(response.body);
-    print(store.userConfig);
     return true;
   }
   return false;

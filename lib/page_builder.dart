@@ -1,9 +1,9 @@
 import 'package:flutter_layout_grid/flutter_layout_grid.dart';
-import 'package:controlly/widgets/sensor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:collection/collection.dart';
 import 'package:controlly/store.dart';
+import 'package:controlly/widgets.dart';
 
 class PageWidget extends StatefulWidget {
   final Map<dynamic, dynamic> pageConfig;
@@ -37,15 +37,18 @@ class _PageWidgetState extends State<PageWidget> {
 
         // scrollable widget area
         Positioned(
-          left: 24,
+          left: 0,
           top: 0,
           bottom: 0,
           right: 0,
           child: SingleChildScrollView(
-            child: LayoutGrid(
-                columnSizes: repeat((page['columns'] ?? 6) * 2, [FixedTrackSize(tileSize / 2)]),
-                rowSizes: repeat((page['rows'] ?? 6) * 2, [FixedTrackSize(tileSize / 2)]),
-                children: processWidgets(widgets)),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: LayoutGrid(
+                  columnSizes: repeat((page['columns'] ?? 8) * 2, [FixedTrackSize(tileSize / 2)]),
+                  rowSizes: repeat((page['rows'] ?? 8) * 2, [FixedTrackSize(tileSize / 2)]),
+                  children: processWidgets(widgets)),
+            ),
           ),
         ),
       ],
@@ -54,18 +57,20 @@ class _PageWidgetState extends State<PageWidget> {
 
   processWidgets(widgets) {
     return widgets.map<Widget>((value) {
-      switch (value['type']) {
-        default:
-          var entity = store.ha!.entities.firstWhereOrNull((e) => e.id == value['entity_id']);
-          if (entity != null) {
-            return SensorWidget(entity: entity).withGridPlacement(
-                columnStart: ((value['col'] ?? 1) * 2 - 1).abs(),
-                rowStart: ((value['row'] ?? 1) * 2 - 1).abs(),
-                columnSpan: ((value['width'] ?? 1) * 2).round(),
-                rowSpan: ((value['height'] ?? 1) * 2).round());
-          }
-          return Text('Entity not found: ${value['entity_id']}');
+      var entity = store.ha!.entities.firstWhereOrNull((e) => e.id == value['entity_id']);
+      if (entity != null) {
+        var widget = getWidget(value['type'], entity, value);
+        var defaults = WIDGET_DEFAULT_SIZES[value['type']];
+
+        var columnStart = ((value['col'] ?? 1) * 2).round();
+        var rowStart = ((value['row'] ?? 1) * 2).round();
+        var columnSpan = ((value['width'] ?? defaults!['width'] ?? 1) * 2).round();
+        var rowSpan = ((value['height'] ?? defaults!['height'] ?? 1) * 2).round();
+
+        return widget.withGridPlacement(
+            columnStart: columnStart, rowStart: rowStart, columnSpan: columnSpan, rowSpan: rowSpan);
       }
+      return Text('Entity not found: ${value['entity_id']}');
     }).toList();
   }
 }
