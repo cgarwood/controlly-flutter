@@ -4,12 +4,22 @@ import 'package:controlly/settings/model.dart';
 import 'package:controlly/settings/view.dart';
 import 'package:controlly/store.dart';
 import 'package:controlly/user_config.dart';
+import 'package:controlly/websocket_server/server.dart';
+import 'package:controlly/device_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 void main() {
   runApp(const MyApp());
+
+  // Intialize device listeners
+  var deviceInfo = DeviceDetails();
+  deviceInfo.initialize();
+
+  // Initialize WebSocket server
+  var wss = WebSocketServer();
+  wss.initialize();
 }
 
 class MyApp extends StatelessWidget {

@@ -7,6 +7,8 @@ class Store {
 
   Map userConfig = {};
 
+  Map device = {};
+
   Store();
 }
 

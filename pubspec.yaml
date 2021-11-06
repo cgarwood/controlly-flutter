@@ -21,6 +21,9 @@ dependencies:
   yaml: ^3.1.0
   collection: ^1.15.0
   flutter_layout_grid: ^1.0.3
+  network_info_plus: ^2.1.0
+  device_info_plus: ^3.1.1
+  battery_plus: ^2.0.1
 
 dev_dependencies:
   flutter_test:
