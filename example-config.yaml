@@ -1,22 +1,45 @@
 # Controlly Example Dashboard Configuration
 
+general:
+  tile_size: 128
+  tile_spacing: 8
+
 pages:
   home:
     title: Dashboard
     icon: home
+    rows: 5
+    columns: 8
     widgets:
       - type: sensor
         entity_id: sensor.living_room_multisensor_temperature
+        row: 0
+        col: 0
+        width: 2
       - type: sensor
         entity_id: sensor.master_bedroom_multisensor_temperature
+        row: 1
+        col: 0
+        height: 2
       - type: sensor
         entity_id: sensor.nursery_multisensor_temperature
+        row: 1.5
+        col: 1
+        height: .5
+        width: .5
       - type: sensor
         entity_id: sensor.garage_multisensor_temperature
+        row: 3
+        col: 2
 
   lights:
     title: Lighting
     icon: lamp
+    rows: 4
+    columns: 8
+    widgets:
+      - type: sensor
+        entity_id: light.living_room
 
   climate:
     title: Climate
