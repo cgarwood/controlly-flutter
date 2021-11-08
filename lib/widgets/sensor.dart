@@ -2,7 +2,7 @@ import 'package:controlly/homeassistant/entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:yaml/yaml.dart';
-import '../utils/helpers.dart';
+import 'package:controlly/utils/helpers.dart';
 
 class SensorWidget extends StatefulWidget {
   final HomeAssistantEntity entity;
@@ -15,6 +15,7 @@ class SensorWidget extends StatefulWidget {
 
 class _SensorWidgetState extends State<SensorWidget> {
   HomeAssistantEntity get entity => widget.entity;
+  YamlMap get config => widget.config;
 
   // should return a text widget or an icon widget
   // use this to determine which kind of widget you want to be the
@@ -87,19 +88,79 @@ class _SensorWidgetState extends State<SensorWidget> {
     }
   }
 
+  Color get entityColor {
+    if (config['color'] is String) {
+      return (config['color'] as String).toColor();
+    }
+
+    if (config['color'] is YamlMap) {
+      // map based on states or a range
+      if (config['color']['range'] is YamlMap) {
+        double min = (config['color']['range']['min'] ?? 50).toDouble();
+        double max = (config['color']['range']['max'] ?? 90).toDouble();
+        double state = double.parse(entity.state!);
+        double percent = (state - min) / (max - min);
+        if (percent > 1) {
+          percent = 1;
+        }
+        if (percent < 0) {
+          percent = 0;
+        }
+
+        HSLColor minColor = HSLColor.fromAHSL(1, (config['color']['range']['min_hue'] ?? 240).toDouble(), 1, 0.3);
+        HSLColor maxColor = HSLColor.fromAHSL(1, (config['color']['range']['max_hue'] ?? 1).toDouble(), 1, 0.3);
+        return HSLColor.lerp(minColor, maxColor, percent)!.toColor();
+      }
+
+      if (config['color'][entity.state] is String) {
+        return (config['color'][entity.state] as String).toColor();
+      }
+    }
+
+    // Standard colors
+    if (!entity.available) {
+      return Colors.grey[300]!;
+    }
+
+    switch (entity.type) {
+      case HomeAssistantEntityType.sensorEntity:
+        switch (entity.deviceClass) {
+          case 'temperature':
+            return Colors.cyan[800]!;
+          case 'humidity':
+            return Colors.blue[600]!;
+          case 'battery':
+            return Colors.green;
+          default:
+            return Colors.grey;
+        }
+      case HomeAssistantEntityType.climateEntity:
+        switch (entity.state) {
+          case 'heat':
+            return Colors.red;
+        }
+        break;
+      case HomeAssistantEntityType.lightEntity:
+      case HomeAssistantEntityType.scriptEntity:
+      case HomeAssistantEntityType.switchEntity:
+        return entity.state == 'on'
+            ? Colors.green
+            : entity.state == 'off'
+                ? Colors.red
+                : Colors.cyan[800]!;
+      default:
+        return Colors.cyan;
+    }
+    return Colors.cyan;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: !entity.available
-              ? Colors.grey[300]
-              : entity.state == 'on'
-                  ? Colors.green
-                  : entity.state == 'off'
-                      ? Colors.red
-                      : Colors.cyan[800],
+          color: entityColor,
         ),
         child: DefaultTextStyle(
           style: const TextStyle(
@@ -119,7 +180,7 @@ class _SensorWidgetState extends State<SensorWidget> {
                 ),
               ),
               Text(
-                entity.name,
+                config['title'] ?? entity.name,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -128,7 +189,7 @@ class _SensorWidgetState extends State<SensorWidget> {
                 ),
               ),
               Text(
-                entity.deviceClass?.toTitleCase() ?? entity.domain.toTitleCase(),
+                config['subtitle'] ?? entity.deviceClass?.toTitleCase() ?? entity.domain.toTitleCase(),
                 style: const TextStyle(
                   fontSize: 10,
                 ),
