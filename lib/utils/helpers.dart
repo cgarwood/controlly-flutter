@@ -79,3 +79,20 @@ String computeStateName(entity) {
   }
   return entity['attributes']['friendly_name'];
 }
+
+Color colorFromRange(value, minValue, maxValue, minHue, maxHue) {
+  double min = (minValue ?? 50).toDouble();
+  double max = (maxValue ?? 90).toDouble();
+  double state = double.parse(value);
+  double percent = (state - min) / (max - min);
+  if (percent > 1) {
+    percent = 1;
+  }
+  if (percent < 0) {
+    percent = 0;
+  }
+
+  HSLColor minColor = HSLColor.fromAHSL(1, (minHue ?? 240).toDouble(), 1, 0.3);
+  HSLColor maxColor = HSLColor.fromAHSL(1, (maxHue ?? 1).toDouble(), 1, 0.3);
+  return HSLColor.lerp(minColor, maxColor, percent)!.toColor();
+}

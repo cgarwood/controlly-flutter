@@ -96,20 +96,8 @@ class _SensorWidgetState extends State<SensorWidget> {
     if (config['color'] is YamlMap) {
       // map based on states or a range
       if (config['color']['range'] is YamlMap) {
-        double min = (config['color']['range']['min'] ?? 50).toDouble();
-        double max = (config['color']['range']['max'] ?? 90).toDouble();
-        double state = double.parse(entity.state!);
-        double percent = (state - min) / (max - min);
-        if (percent > 1) {
-          percent = 1;
-        }
-        if (percent < 0) {
-          percent = 0;
-        }
-
-        HSLColor minColor = HSLColor.fromAHSL(1, (config['color']['range']['min_hue'] ?? 240).toDouble(), 1, 0.3);
-        HSLColor maxColor = HSLColor.fromAHSL(1, (config['color']['range']['max_hue'] ?? 1).toDouble(), 1, 0.3);
-        return HSLColor.lerp(minColor, maxColor, percent)!.toColor();
+        return colorFromRange(entity.state, config['color']['range']['min'], config['color']['range']['max'],
+            config['color']['range']['min_color'], config['color']['range']['max_color']);
       }
 
       if (config['color'][entity.state] is String) {
