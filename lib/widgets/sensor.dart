@@ -1,4 +1,6 @@
 import 'package:controlly/homeassistant/entity.dart';
+import 'package:controlly/homeassistant/entities/sensor.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:yaml/yaml.dart';
@@ -17,75 +19,37 @@ class _SensorWidgetState extends State<SensorWidget> {
   HomeAssistantEntity get entity => widget.entity;
   YamlMap get config => widget.config;
 
-  // should return a text widget or an icon widget
-  // use this to determine which kind of widget you want to be the
-  // main state widget.
   Widget entityState() {
-    switch (entity.type) {
-      case HomeAssistantEntityType.sensorEntity:
-        switch (entity.deviceClass) {
-          // will use text and append a degree symbol
-          case 'temperature':
-            return Text(
-              (entity.state ?? '') + '°',
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            );
-          case 'humidity':
-          case 'battery':
-            return Text(
-              (entity.state ?? '') + '%',
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            );
-          default:
-            // TODO: return an icon if the state is 'charging' or 'discharging'
-            return Text(
-              (entity.state ?? ''),
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            );
-        }
-      case HomeAssistantEntityType.climateEntity:
-        var heat = const Icon(
-          Icons.fireplace_outlined,
-          color: Colors.white,
-        );
-        var cool = const Icon(
-          Icons.ac_unit,
-          color: Colors.white,
-        );
-        switch (entity.state) {
-          case 'heat':
-            return heat;
-          case 'cool':
-            return cool;
-          default:
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [heat, cool],
-            );
-        }
-
-      default:
-        return Text(
+    if (entity is HomeAssistantSensorEntity) {
+      return Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(
           (entity.state ?? ''),
           textAlign: TextAlign.center,
           style: const TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
+            height: 1,
           ),
-        );
+        ),
+        Text(
+          ((entity as HomeAssistantSensorEntity).unitOfMeasurement ?? ''),
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ]);
     }
+
+    return Text(
+      (entity.state ?? ''),
+      textAlign: TextAlign.center,
+      style: const TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.bold,
+      ),
+    );
   }
 
   Color get entityColor {
@@ -126,6 +90,8 @@ class _SensorWidgetState extends State<SensorWidget> {
         switch (entity.state) {
           case 'heat':
             return Colors.red;
+          case 'cool':
+            return Colors.blue;
         }
         break;
       case HomeAssistantEntityType.lightEntity:

@@ -10,13 +10,13 @@ class HomeAssistantSensorEntity extends HomeAssistantEntity {
           type: HomeAssistantEntityType.sensorEntity,
           stateData: stateData,
         ) {
-    unitOfMeasurement = stateData['unit_of_measurement'];
+    unitOfMeasurement = stateData['attributes']['unit_of_measurement'];
   }
 
   @override
   void handleUpdate(Map<String, dynamic> newState) {
     super.handleUpdate(newState);
-    unitOfMeasurement = newState['unit_of_measurement'];
+    unitOfMeasurement = newState['attributes']['unit_of_measurement'];
   }
 
   @override
