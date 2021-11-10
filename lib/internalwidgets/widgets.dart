@@ -20,6 +20,7 @@ class MyTextInput extends StatefulWidget {
   final bool autoselect;
 
   const MyTextInput({
+    Key? key,
     this.onChanged,
     this.focusNode,
     this.nextNode,
@@ -31,7 +32,7 @@ class MyTextInput extends StatefulWidget {
     this.initialValue = '',
     this.monospace = false,
     this.autoselect = false,
-  });
+  }) : super(key: key);
 
   @override
   _MyTextInputState createState() => _MyTextInputState();
