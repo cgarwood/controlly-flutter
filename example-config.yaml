@@ -27,6 +27,12 @@ pages:
         col: 1
         height: .5
         width: .5
+        title: Nursery
+        subtitle: Test
+        color: "#AA00FF"
+        subtitle_color: F6FF33
+        state_color: 33FF64
+        text_color: 33FFF6
       - type: sensor
         entity_id: sensor.garage_multisensor_temperature
         row: 3

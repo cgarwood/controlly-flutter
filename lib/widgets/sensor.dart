@@ -1,5 +1,6 @@
 import 'package:controlly/homeassistant/entity.dart';
 import 'package:controlly/homeassistant/entities/sensor.dart';
+import 'package:controlly/widgets/common/title.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -25,18 +26,20 @@ class _SensorWidgetState extends State<SensorWidget> {
         Text(
           (entity.state ?? ''),
           textAlign: TextAlign.center,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
             height: 1,
+            color: stateColor,
           ),
         ),
         Text(
           ((entity as HomeAssistantSensorEntity).unitOfMeasurement ?? ''),
           textAlign: TextAlign.center,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.bold,
+            color: stateColor,
           ),
         ),
       ]);
@@ -108,8 +111,30 @@ class _SensorWidgetState extends State<SensorWidget> {
     return Colors.cyan;
   }
 
+  Color get stateColor {
+    if (config['state_color'] != null) {
+      return (config['state_color'] as String).toColor();
+    }
+    if (config['text_color'] == 'light') {
+      return Colors.white;
+    }
+    if (config['text_color'] == 'dark') {
+      return Colors.black;
+    }
+    if (entityColor == Colors.white) {
+      return Colors.black;
+    }
+    if (config['text_color'] != null) {
+      return (config['text_color'] as String).toColor();
+    }
+    return Colors.white;
+  }
+
   @override
   Widget build(BuildContext context) {
+    String textColor = config['text_color'] ?? (entityColor == Colors.white ? 'dark' : 'light');
+    String? subtitleColor = config['subtitle_color'];
+
     return Card(
       child: Container(
         padding: const EdgeInsets.all(8),
@@ -133,21 +158,12 @@ class _SensorWidgetState extends State<SensorWidget> {
                   child: entityState(), // see above
                 ),
               ),
-              Text(
-                config['title'] ?? entity.name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w300,
-                ),
-              ),
-              Text(
-                config['subtitle'] ?? entity.deviceClass?.toTitleCase() ?? entity.domain.toTitleCase(),
-                style: const TextStyle(
-                  fontSize: 10,
-                ),
-              ),
+              CommonTitleWidget(
+                entity: entity,
+                config: config,
+                textColor: textColor,
+                subtitleColor: subtitleColor,
+              )
             ],
           ),
         ),
