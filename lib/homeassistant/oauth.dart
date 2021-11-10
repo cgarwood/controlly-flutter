@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer' as developer;
 
 import 'package:controlly/config.dart';
 import 'package:flutter/material.dart';
@@ -62,10 +63,10 @@ class _HassOAuth2PageState extends State<HassOAuth2Page> {
       'client_id': Config.hassClientId,
     });
     var data = json.decode(res.body);
-    print(data['access_token']);
-    print(data['token_type']);
-    print(data['expires_in']);
-    print(data['refresh_token']);
+    developer.log(data['access_token']);
+    developer.log(data['token_type']);
+    developer.log(data['expires_in']);
+    developer.log(data['refresh_token']);
   }
 
   @override

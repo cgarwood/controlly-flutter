@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:async';
+import 'dart:developer' as developer;
 
 import 'package:controlly/homeassistant/entities/climate.dart';
 import 'package:controlly/homeassistant/entities/light.dart';
@@ -169,7 +170,7 @@ class HomeAssistant {
       settings.save();
       return;
     } catch (e) {
-      print(e);
+      developer.log(e.toString());
     }
   }
 
@@ -207,8 +208,8 @@ class HomeAssistant {
   }
 
   void handler(WSMessage message) {
-    // print('Homeassistant Message Handler');
-    // print(message.rawString);
+    // developer.log('Homeassistant Message Handler');
+    // developer.log(message.rawString);
     bool reloadStates = false;
     var data = message.rawMap;
     var requestId = data?['id'] ?? false;
@@ -239,9 +240,9 @@ class HomeAssistant {
               updateController.add('');
             } on StateError {
               reloadStates = true;
-              print('No entity handler for ${stateData['entity_id']}');
+              developer.log('No entity handler for ${stateData['entity_id']}');
             } catch (e) {
-              // print(e);
+              // developer.log(e);
             }
             break;
         }

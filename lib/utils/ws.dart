@@ -3,6 +3,7 @@
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer' as developer;
 
 /// the wsmessage class
 class WSMessage {
@@ -99,8 +100,8 @@ class WS {
 
   void send(WSMessage message) {
     var msg = message.toJson();
-    // print('WS $socketId $niceName: sending websocket message');
-    // print(msg);
+    // developer.log('WS $socketId $niceName: sending websocket message');
+    // developer.log(msg);
     if (_socket?.readyState == WebSocket.open) {
       _socket!.add(msg);
     } else {
@@ -130,17 +131,17 @@ class WS {
     if (disposed) return;
     if (_wsUrl == null) return;
 
-    print('WS $socketId $niceName: attempting to connect websocket: $_wsUrl');
+    developer.log('WS $socketId $niceName: attempting to connect websocket: $_wsUrl');
     try {
       _socket = await WebSocket.connect(_wsUrl!);
       _connectionStatusController.add(true);
       _heartBeat();
     } catch (e) {
-      print(e);
+      developer.log(e.toString());
       connected = false;
       _connectionStatusController.add(false);
       var nextRetry = retrySeconds + 2;
-      print('WS $socketId $niceName: connection failed, trying again in $nextRetry seconds: $_wsUrl');
+      developer.log('WS $socketId $niceName: connection failed, trying again in $nextRetry seconds: $_wsUrl');
       Timer(
         Duration(seconds: retrySeconds),
         () => _socketStart(retrySeconds: nextRetry),
@@ -162,13 +163,11 @@ class WS {
         _connectionStatusController.add(false);
 
         if (_socket?.closeReason == 'self') {
-          print('WS $socketId $niceName: I closed my websocket connection.');
+          developer.log('WS $socketId $niceName: I closed my websocket connection.');
           return;
         }
 
-        print(_socket?.closeReason);
-        print(_socket?.closeCode);
-        print('WS $socketId $niceName: WEBSOCKET CONNECTION WAS CLOSED EXTERNALLY. TRYING AGAIN IN 2 SECONDS.');
+        developer.log('WS $socketId $niceName: WEBSOCKET CONNECTION WAS CLOSED EXTERNALLY. TRYING AGAIN IN 2 SECONDS.');
         Timer(const Duration(seconds: 2), () {
           _socketStart(isAutoReconnect: true);
         });
@@ -183,8 +182,8 @@ class WS {
   }
 
   void handler(data) {
-    // print('WS $socketId $niceName: message received.');
-    // print(data);
+    // developer.log('WS $socketId $niceName: message received.');
+    // developer.log(data);
     var message = WSMessage.fromString(data);
     _outputController.add(message);
   }
