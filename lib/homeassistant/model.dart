@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:async';
 import 'dart:developer' as developer;
 
+import 'package:controlly/homeassistant/entities/binary_sensor.dart';
 import 'package:controlly/homeassistant/entities/climate.dart';
 import 'package:controlly/homeassistant/entities/light.dart';
 import 'package:controlly/homeassistant/entities/sensor.dart';
@@ -264,6 +265,9 @@ class HomeAssistant {
 
               dynamic hae;
               switch (typeString) {
+                case 'binary_sensor':
+                  hae = HomeAssistantBinarySensorEntity(id, this, result);
+                  break;
                 case 'switch':
                   hae = HomeAssistantSwitchEntity(id, this, result);
                   break;

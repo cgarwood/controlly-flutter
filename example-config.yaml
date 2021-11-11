@@ -37,6 +37,21 @@ pages:
         entity_id: sensor.garage_multisensor_temperature
         row: 3
         col: 2
+      - type: sensor_icon
+        entity_id: binary_sensor.living_room_multisensor_motion
+        row: 3
+        col: 0
+      - type: sensor_icon
+        entity_id: binary_sensor.living_room_multisensor_motion
+        title: Test
+        icon:
+          on: axe-battle
+          off: badminton
+        color:
+          on: FF8633
+          off: 33E0FF
+        row: 3
+        col: 1
 
   lights:
     title: Lighting
