@@ -1,5 +1,6 @@
-// Reference:
+// References:
 // https://github.com/home-assistant/frontend/blob/dev/src/common/entity/binary_sensor_icon.ts
+// https://github.com/home-assistant/frontend/blob/dev/src/components/chart/state-history-chart-timeline.ts
 
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
