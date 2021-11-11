@@ -112,11 +112,13 @@ class _SensorIconWidgetState extends State<SensorIconWidget> {
     String? subtitleColor = config['subtitle_color'];
 
     return Card(
-      child: Container(
+      child: AnimatedContainer(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: entityColor,
         ),
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.fastOutSlowIn,
         child: DefaultTextStyle(
           style: const TextStyle(
             color: Colors.white,
