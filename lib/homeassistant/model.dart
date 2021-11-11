@@ -298,8 +298,9 @@ class HomeAssistant {
                   hae = HomeAssistantSensorEntity(id, this, result);
                   break;
                 default:
-                  // not one of the three entity types we track... abort
-                  continue;
+                  hae = HomeAssistantEntity(
+                      id: id, type: HomeAssistantEntityType.genericEntity, parent: this, stateData: result);
+                  break;
               }
 
               // hae might be null, so we doublecheck

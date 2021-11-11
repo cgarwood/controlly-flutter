@@ -16,6 +16,7 @@ enum HomeAssistantEntityType {
   automationEntity,
   cameraEntity,
   binarySensorEntity,
+  genericEntity,
 }
 
 // ignore: constant_identifier_names
