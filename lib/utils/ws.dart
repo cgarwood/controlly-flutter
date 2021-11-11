@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_print
-
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
@@ -158,7 +156,7 @@ class WS {
       handler,
       onDone: () {
         _heartBeatTimer?.cancel();
-        retrySeconds = 2;
+        retrySeconds = 5;
         connected = false;
         _connectionStatusController.add(false);
 
@@ -168,7 +166,7 @@ class WS {
         }
 
         developer.log('WS $socketId $niceName: WEBSOCKET CONNECTION WAS CLOSED EXTERNALLY. TRYING AGAIN IN 2 SECONDS.');
-        Timer(const Duration(seconds: 2), () {
+        Timer(Duration(seconds: retrySeconds), () {
           _socketStart(isAutoReconnect: true);
         });
       },

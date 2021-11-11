@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:controlly/store.dart';
 import 'package:flutter/material.dart';
 import './homeassistant.dart';
 
@@ -42,10 +43,9 @@ class _HomeAssistantPageState extends State<HomeAssistantPage> {
 }
 
 class HassAuthConfirm extends StatefulWidget {
-  final HomeAssistant hass;
   final Uri response;
 
-  const HassAuthConfirm(this.hass, this.response, {Key? key}) : super(key: key);
+  const HassAuthConfirm(this.response, {Key? key}) : super(key: key);
 
   @override
   _HassAuthConfirmState createState() => _HassAuthConfirmState();
@@ -59,7 +59,7 @@ class _HassAuthConfirmState extends State<HassAuthConfirm> {
     super.initState();
     var code = widget.response.queryParameters['code'];
     if (code == null) return;
-    widget.hass.getTokens(code).then((_) {
+    store.ha!.getTokens(code).then((_) {
       if (mounted) {
         setState(() {
           finishing = false;

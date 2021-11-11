@@ -129,7 +129,6 @@ class HomeAssistant {
       queryParameters: {
         'client_id': Config.hassClientId,
         'redirect_uri': Config.hassRedirectUri,
-        'state': 'random string',
       },
     );
     launch(uri.toString());
@@ -162,7 +161,11 @@ class HomeAssistant {
         'refresh_token': settings.refreshToken,
         'client_id': Config.hassClientId,
       });
-      if (res.statusCode != 200) return;
+
+      if (res.statusCode != 200) {
+        authorize();
+        return;
+      }
 
       var data = json.decode(res.body);
       settings.expiringAccessToken = data['access_token'];
@@ -181,9 +184,12 @@ class HomeAssistant {
 
   Future<void> connect() async {
     if (settings.ip.isEmpty || settings.port == 0) return;
-    if (settings.accessToken.isEmpty) {
+    if (settings.refreshToken.isEmpty) {
       authorize();
       return;
+    }
+    if (settings.accessToken.isEmpty) {
+      await refreshTokens();
     }
 
     if (settings.shouldRefresh) await refreshTokens();

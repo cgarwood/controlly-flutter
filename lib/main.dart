@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:developer' as developer;
 import 'package:controlly/homeassistant/homeassistant.dart';
 import 'package:controlly/page_builder.dart';
 import 'package:controlly/settings/model.dart';
@@ -6,9 +8,11 @@ import 'package:controlly/store.dart';
 import 'package:controlly/user_config.dart';
 import 'package:controlly/websocket_server/server.dart';
 import 'package:controlly/device_details.dart';
+import 'package:controlly/config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:uni_links/uni_links.dart';
 
 void main() {
   runApp(const MyApp());
@@ -52,6 +56,38 @@ class ControllyHome extends StatefulWidget {
 /// in this widget, we wait for the data store to load,
 /// and then render the widget tree accordingly
 class _ControllyHomeState extends State<ControllyHome> {
+  StreamSubscription? _linkSub;
+
+  Future<void> initUniLinks() async {
+    // Attach a listener to the stream
+    _linkSub = uriLinkStream.listen((Uri? link) {
+      // links are registered as controlly://main/path
+      // scheme is 'controlly'
+      // host/authority is 'main'
+      developer.log('Link: $link');
+      developer.log('Authority: ${link!.authority}');
+      developer.log('Path: ${link.path}');
+      developer.log('Query: ${link.queryParameters}');
+      if (link.path == '/auth-callback') {
+        String? code = link.queryParameters['code'];
+        if (code == null) {
+          developer.log('No code in query parameters');
+          return;
+        }
+        store.ha!.getTokens(code).then((_) {
+          store.ha!.connect();
+        });
+      }
+      Config.navigatorKey.currentState?.push(MaterialPageRoute(
+        builder: (context) {
+          return HassAuthConfirm(link);
+        },
+      ));
+    }, onError: (err) {
+      // Handle exception by warning the user their action did not succeed
+    });
+  }
+
   Future launch(BuildContext context, Widget page) async {
     await Navigator.of(context).push(MaterialPageRoute(builder: (context) => page));
     refresh();
@@ -65,6 +101,13 @@ class _ControllyHomeState extends State<ControllyHome> {
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
     checkSettings();
+    initUniLinks();
+  }
+
+  @override
+  void dispose() {
+    _linkSub?.cancel();
+    super.dispose();
   }
 
   void refresh() {
@@ -83,6 +126,10 @@ class _ControllyHomeState extends State<ControllyHome> {
         port: int.tryParse(settingsManager.getItem('haPort')) ?? 8123,
         ssl: settingsManager.getItem('haSSL'),
         longLivedToken: settingsManager.getItem('haToken'),
+        expiringAccessToken: settingsManager.haSettings['expiringAccessToken'] ?? '',
+        refreshToken: settingsManager.haSettings['refreshToken'] ?? '',
+        expiresIn: Duration(seconds: settingsManager.haSettings['expiresIn'] ?? 0),
+        tokenTime: DateTime.fromMillisecondsSinceEpoch(settingsManager.haSettings['tokenTime'] ?? 0),
       ));
       await store.ha!.connect();
     }

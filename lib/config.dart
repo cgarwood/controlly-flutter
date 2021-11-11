@@ -6,8 +6,11 @@
 ///
 /// HOWEVER, another way is to create a Class with static const variables only
 /// And access it from the parent class [Config.hassClientId]
+import 'package:flutter/material.dart';
 
 class Config {
-  static const hassClientId = "https://jeffmikels.org/controlly.html";
-  static const hassRedirectUri = "controlly://main/hass";
+  static const hassClientId = "https://cgarwood.github.io/controlly/auth_callback";
+  static const hassRedirectUri = "controlly://main/auth-callback";
+
+  static var navigatorKey = GlobalKey<NavigatorState>();
 }
