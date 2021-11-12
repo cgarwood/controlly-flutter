@@ -1,8 +1,19 @@
-import 'package:controlly/utils/device_class_icons.dart';
 import 'package:controlly/utils/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:yaml/yaml.dart';
+
+//ignore: constant_identifier_names
+const BINARY_SENSOR_COLOR_INVERTED = [
+  "battery_charging",
+  "connectivity",
+  "light",
+  "moving",
+  "plug",
+  "power",
+  "presence",
+  "running",
+];
 
 Color getBackgroundColor(entity, config) {
   if (config['color'] is String) {

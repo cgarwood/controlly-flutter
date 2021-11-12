@@ -139,15 +139,3 @@ const FIXED_DEVICE_CLASS_ICONS = {
   "volatile_organic_compounds": MdiIcons.molecule,
   "voltage": MdiIcons.sineWave,
 };
-
-//ignore: constant_identifier_names
-const BINARY_SENSOR_COLOR_INVERTED = [
-  "battery_charging",
-  "connectivity",
-  "light",
-  "moving",
-  "plug",
-  "power",
-  "presence",
-  "running",
-];
