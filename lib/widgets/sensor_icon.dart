@@ -1,14 +1,13 @@
 import 'package:controlly/homeassistant/entity.dart';
 import 'package:controlly/utils/colors.dart';
+import 'package:controlly/utils/device_class_icons.dart';
+import 'package:controlly/utils/helpers.dart';
 import 'package:controlly/widgets/common/tile.dart';
 import 'package:controlly/widgets/common/title.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:yaml/yaml.dart';
-import 'package:controlly/utils/helpers.dart';
-import 'package:controlly/utils/device_class_icons.dart';
 
 class SensorIconWidget extends StatefulWidget {
   final HomeAssistantEntity entity;

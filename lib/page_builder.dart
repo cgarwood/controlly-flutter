@@ -1,9 +1,9 @@
-import 'package:flutter_layout_grid/flutter_layout_grid.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:collection/collection.dart';
 import 'package:controlly/store.dart';
 import 'package:controlly/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_layout_grid/flutter_layout_grid.dart';
 
 class PageWidget extends StatefulWidget {
   final Map<dynamic, dynamic> pageConfig;

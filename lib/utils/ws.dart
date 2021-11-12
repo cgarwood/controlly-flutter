@@ -1,7 +1,7 @@
-import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer' as developer;
+import 'dart:io';
 
 /// the wsmessage class
 class WSMessage {

@@ -1,5 +1,5 @@
-import 'dart:convert';
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer' as developer;
 
 import 'package:controlly/homeassistant/entities/binary_sensor.dart';
@@ -8,13 +8,13 @@ import 'package:controlly/homeassistant/entities/light.dart';
 import 'package:controlly/homeassistant/entities/sensor.dart';
 import 'package:controlly/homeassistant/entities/switch.dart';
 import 'package:controlly/homeassistant/entity.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 import '../config.dart';
-import '../utils/ws.dart';
 import '../settings/model.dart';
+import '../utils/ws.dart';
 
 enum ComponentConnectionStatus { disconnected, connecting, connected, failed }
 

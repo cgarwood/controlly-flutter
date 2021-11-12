@@ -1,13 +1,12 @@
-import 'package:controlly/homeassistant/entity.dart';
 import 'package:controlly/homeassistant/entities/sensor.dart';
+import 'package:controlly/homeassistant/entity.dart';
 import 'package:controlly/utils/colors.dart';
+import 'package:controlly/utils/helpers.dart';
 import 'package:controlly/widgets/common/tile.dart';
 import 'package:controlly/widgets/common/title.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:yaml/yaml.dart';
-import 'package:controlly/utils/helpers.dart';
 
 class SensorWidget extends StatefulWidget {
   final HomeAssistantEntity entity;

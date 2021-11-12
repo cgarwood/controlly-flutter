@@ -1,6 +1,6 @@
+import 'package:battery_plus/battery_plus.dart';
 import 'package:controlly/store.dart';
 import 'package:network_info_plus/network_info_plus.dart';
-import 'package:battery_plus/battery_plus.dart';
 
 class DeviceDetails {
   final battery = Battery();

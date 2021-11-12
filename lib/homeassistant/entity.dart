@@ -1,7 +1,8 @@
 import 'dart:async';
+
 import 'package:controlly/homeassistant/model.dart';
-import 'package:controlly/utils/ws.dart';
 import 'package:controlly/utils/helpers.dart';
+import 'package:controlly/utils/ws.dart';
 
 enum HomeAssistantEntityType {
   switchEntity,

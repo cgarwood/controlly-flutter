@@ -1,6 +1,6 @@
-import 'package:http/http.dart' as http;
 import 'package:controlly/settings/model.dart';
 import 'package:controlly/store.dart';
+import 'package:http/http.dart' as http;
 import 'package:yaml/yaml.dart';
 
 Future<bool> loadUserConfig() async {

@@ -1,8 +1,7 @@
 import 'package:controlly/homeassistant/homeassistant.dart';
+import 'package:controlly/settings/model.dart';
 import 'package:controlly/store.dart';
 import 'package:flutter/material.dart';
-
-import 'package:controlly/settings/model.dart';
 
 final Map configItems = {
   'haHost': {

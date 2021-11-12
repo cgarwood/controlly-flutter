@@ -1,8 +1,8 @@
 import 'package:controlly/utils/device_class_icons.dart';
+import 'package:controlly/utils/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:yaml/yaml.dart';
-import 'package:controlly/utils/helpers.dart';
 
 Color getBackgroundColor(entity, config) {
   if (config['color'] is String) {
