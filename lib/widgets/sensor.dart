@@ -137,36 +137,44 @@ class _SensorWidgetState extends State<SensorWidget> {
 
     return Card(
       child: AnimatedContainer(
-        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: entityColor,
         ),
         duration: const Duration(milliseconds: 500),
         curve: Curves.fastOutSlowIn,
-        child: DefaultTextStyle(
-          style: const TextStyle(
-            color: Colors.white,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              // will take up as much of the column as it can
-              // if you want this top state widget to take up a specific amount of space,
-              // you'll need to replace this with a sized box and then play with
-              // the positioning of the other items in the Column
-              Expanded(
-                child: Center(
-                  child: entityState(), // see above
+        child: Material(
+          type: MaterialType.transparency,
+          child: InkWell(
+            onTap: () {},
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: DefaultTextStyle(
+                style: const TextStyle(
+                  color: Colors.white,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    // will take up as much of the column as it can
+                    // if you want this top state widget to take up a specific amount of space,
+                    // you'll need to replace this with a sized box and then play with
+                    // the positioning of the other items in the Column
+                    Expanded(
+                      child: Center(
+                        child: entityState(), // see above
+                      ),
+                    ),
+                    CommonTitleWidget(
+                      entity: entity,
+                      config: config,
+                      textColor: textColor,
+                      subtitleColor: subtitleColor,
+                    )
+                  ],
                 ),
               ),
-              CommonTitleWidget(
-                entity: entity,
-                config: config,
-                textColor: textColor,
-                subtitleColor: subtitleColor,
-              )
-            ],
+            ),
           ),
         ),
       ),
