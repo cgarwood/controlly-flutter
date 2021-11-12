@@ -1,4 +1,6 @@
 import 'package:controlly/homeassistant/entity.dart';
+import 'package:controlly/utils/colors.dart';
+import 'package:controlly/widgets/common/tile.dart';
 import 'package:controlly/widgets/common/title.dart';
 
 import 'package:flutter/material.dart';
@@ -43,49 +45,7 @@ class _SensorIconWidgetState extends State<SensorIconWidget> {
     return FIXED_DOMAIN_ICONS[entity.domain] ?? MdiIcons.radioboxBlank;
   }
 
-  Color get entityColor {
-    if (config['color'] is String) {
-      return (config['color'] as String).toColor();
-    }
-
-    if (config['color'] is YamlMap) {
-      if (config['color'][entity.state] is String) {
-        return (config['color'][entity.state] as String).toColor();
-      }
-    }
-
-    // Standard colors
-    if (!entity.available) {
-      return Colors.grey[300]!;
-    }
-
-    switch (entity.domain) {
-      case "binary_sensor":
-        if (BINARY_SENSOR_COLOR_INVERTED.contains(entity.deviceClass)) {
-          return entity.state == "on" ? Colors.green : Colors.red;
-        }
-        return entity.state == "on" ? Colors.red : Colors.green;
-      case "climate":
-        switch (entity.state) {
-          case 'heat':
-            return Colors.red;
-          case 'cool':
-            return Colors.blue;
-        }
-        break;
-      case "light":
-      case "script":
-      case "sensor":
-        return entity.state == 'on'
-            ? Colors.green
-            : entity.state == 'off'
-                ? Colors.red
-                : Colors.cyan[800]!;
-      default:
-        return Colors.cyan;
-    }
-    return Colors.cyan;
-  }
+  Color get backgroundColor => getBackgroundColor(entity, config);
 
   Color get stateColor {
     if (config['state_color'] != null) {
@@ -97,7 +57,7 @@ class _SensorIconWidgetState extends State<SensorIconWidget> {
     if (config['text_color'] == 'dark') {
       return Colors.black;
     }
-    if (entityColor == Colors.white) {
+    if (backgroundColor == Colors.white) {
       return Colors.black;
     }
     if (config['text_color'] != null) {
@@ -108,50 +68,36 @@ class _SensorIconWidgetState extends State<SensorIconWidget> {
 
   @override
   Widget build(BuildContext context) {
-    String textColor = config['text_color'] ?? (entityColor == Colors.white ? 'dark' : 'light');
+    String textColor = config['text_color'] ?? (backgroundColor == Colors.white ? 'dark' : 'light');
     String? subtitleColor = config['subtitle_color'];
 
-    return Card(
-      child: AnimatedContainer(
-        decoration: BoxDecoration(
-          color: entityColor,
+    return CommonTileWidget(
+      entity: entity,
+      config: config,
+      child: DefaultTextStyle(
+        style: const TextStyle(
+          color: Colors.white,
         ),
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.fastOutSlowIn,
-        child: Material(
-          type: MaterialType.transparency,
-          child: InkWell(
-            onTap: () {},
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: DefaultTextStyle(
-                style: const TextStyle(
-                  color: Colors.white,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    // will take up as much of the column as it can
-                    // if you want this top state widget to take up a specific amount of space,
-                    // you'll need to replace this with a sized box and then play with
-                    // the positioning of the other items in the Column
-                    Expanded(
-                      child: Center(
-                        child: entityState(), // see above
-                      ),
-                    ),
-                    CommonTitleWidget(
-                      entity: entity,
-                      config: config,
-                      textColor: textColor,
-                      subtitleColor: subtitleColor,
-                    )
-                  ],
-                ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            // will take up as much of the column as it can
+            // if you want this top state widget to take up a specific amount of space,
+            // you'll need to replace this with a sized box and then play with
+            // the positioning of the other items in the Column
+            Expanded(
+              child: Center(
+                child: entityState(), // see above
               ),
             ),
-          ),
+            CommonTitleWidget(
+              entity: entity,
+              config: config,
+              textColor: textColor,
+              subtitleColor: subtitleColor,
+            )
+          ],
         ),
       ),
     );
