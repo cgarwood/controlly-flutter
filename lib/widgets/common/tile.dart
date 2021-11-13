@@ -8,9 +8,8 @@ class CommonTileWidget extends StatefulWidget {
   final HomeAssistantEntity entity;
   final YamlMap config;
   final Widget child;
-  final Function? onTap;
-  final Function? onLongPress;
-  final Function? onRightTap;
+  final Function()? onTap;
+  final Function()? onLongPress;
   const CommonTileWidget({
     Key? key,
     required this.entity,
@@ -18,7 +17,6 @@ class CommonTileWidget extends StatefulWidget {
     required this.child,
     this.onTap,
     this.onLongPress,
-    this.onRightTap,
   }) : super(key: key);
 
   @override
@@ -38,7 +36,8 @@ class _CommonTileWidgetState extends State<CommonTileWidget> {
     Widget clickableChild = Material(
       type: MaterialType.transparency,
       child: InkWell(
-        onTap: () {},
+        onTap: widget.onTap,
+        onLongPress: widget.onLongPress,
         child: Padding(
           padding: const EdgeInsets.all(8),
           child: widget.child,
@@ -49,7 +48,7 @@ class _CommonTileWidgetState extends State<CommonTileWidget> {
       padding: const EdgeInsets.all(8),
       child: widget.child,
     );
-    bool clickable = widget.onTap != null || widget.onLongPress != null || widget.onRightTap != null;
+    bool clickable = widget.onTap != null || widget.onLongPress != null;
     return Card(
       child: AnimatedContainer(
         decoration: BoxDecoration(

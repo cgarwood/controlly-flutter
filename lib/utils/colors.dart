@@ -63,6 +63,7 @@ Color getBackgroundColor(entity, config) {
       }
       break;
     case "light":
+      return entity.state == 'on' ? "B94492".toColor() : "9E3B7D".toColor();
     case "script":
     case "switch":
       return entity.state == 'on'

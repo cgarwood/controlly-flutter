@@ -9,8 +9,14 @@ class CommonTitleWidget extends StatefulWidget {
   final YamlMap config;
   final String textColor;
   final String? subtitleColor;
+  final String? defaultSubtitle;
   const CommonTitleWidget(
-      {Key? key, required this.entity, required this.config, this.textColor = 'light', this.subtitleColor})
+      {Key? key,
+      required this.entity,
+      required this.config,
+      this.textColor = 'light',
+      this.subtitleColor,
+      this.defaultSubtitle})
       : super(key: key);
 
   @override
@@ -62,7 +68,10 @@ class _CommonTitleWidgetState extends State<CommonTitleWidget> {
           ),
         ),
         Text(
-          config['subtitle'] ?? entity.deviceClass?.toTitleCase() ?? entity.domain.toTitleCase(),
+          config['subtitle'] ??
+              widget.defaultSubtitle ??
+              entity.deviceClass?.toTitleCase() ??
+              entity.domain.toTitleCase(),
           style: TextStyle(fontSize: 10, color: subtitleColor),
         ),
       ],

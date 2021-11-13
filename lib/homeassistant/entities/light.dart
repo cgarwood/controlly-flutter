@@ -1,22 +1,22 @@
 import 'package:controlly/homeassistant/entity.dart';
 
-class HomeAssistantLightEntity extends HomeAssistantEntity {
+class HomeAssistantLightEntity extends HomeAssistantSwitchableEntity {
   int? brightness;
 
   HomeAssistantLightEntity(id, parent, stateData)
       : super(
           id: id,
           parent: parent,
-          type: HomeAssistantEntityType.sensorEntity,
+          type: HomeAssistantEntityType.lightEntity,
           stateData: stateData,
         ) {
-    brightness = stateData['brightness'];
+    brightness = stateData['attributes']['brightness'];
   }
 
   @override
   void handleUpdate(Map<String, dynamic> newState) {
     super.handleUpdate(newState);
-    brightness = newState['brightness'];
+    brightness = newState['attributes']['brightness'];
   }
 
   @override
