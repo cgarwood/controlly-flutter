@@ -29,7 +29,7 @@ class _SensorWidgetState extends State<SensorWidget> {
           (entity.state ?? ''),
           textAlign: TextAlign.center,
           style: TextStyle(
-            fontSize: 24,
+            fontSize: 28,
             fontWeight: FontWeight.bold,
             height: 1,
             color: stateColor,

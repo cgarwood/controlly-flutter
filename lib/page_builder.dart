@@ -19,7 +19,7 @@ class _PageWidgetState extends State<PageWidget> {
     var page = widget.pageConfig;
 
     var widgets = page['widgets'] ?? [];
-    var tileSize = store.userConfig['tileSize'] ?? 128;
+    var tileSize = store.userConfig['general']['tile_size'] ?? 140;
 
     return Stack(
       children: [
