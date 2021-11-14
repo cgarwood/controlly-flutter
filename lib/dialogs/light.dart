@@ -1,3 +1,4 @@
+import 'package:controlly/dialogs/general.dart';
 import 'package:controlly/homeassistant/entities/light.dart';
 import 'package:controlly/homeassistant/entity.dart';
 import 'package:controlly/store.dart';
@@ -5,6 +6,7 @@ import 'package:controlly/utils/colors.dart';
 import 'package:controlly/utils/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:timeago/timeago.dart' as timeago;
 import 'package:yaml/yaml.dart';
 
 class LightDialog extends StatefulWidget {
@@ -42,59 +44,55 @@ class _LightDialogState extends State<LightDialog> {
             } else {
               sliderChanged = false;
             }
-            return Dialog(
-              child: Container(
-                padding: const EdgeInsets.all(24),
-                width: 550,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          entity.name,
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.close),
-                          onPressed: () => Navigator.of(context).pop(),
-                        ),
-                      ],
-                    ),
-                    const Divider(),
-                    const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        const Text(
-                          'Brightness',
-                          style: TextStyle(
-                            fontSize: 16,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 300,
-                          child: Slider(
-                            value: brightness,
-                            min: 0,
-                            max: 100,
-                            onChanged: (value) => setState(() {
-                              sliderChanged = true;
-                              brightness = value;
-                            }),
-                            onChangeEnd: (value) =>
-                                (entity as HomeAssistantLightEntity).setBrightness(convertPctTo255(value)),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                  ],
+            return GeneralDialog(
+              header: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                Switch(
+                  value: entity.state == 'on',
+                  onChanged: (value) {
+                    (entity as HomeAssistantLightEntity).toggle(value);
+                  },
                 ),
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(
+                    entity.name,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    timeago.format(entity.lastUpdated!),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ]),
+              ]),
+              body: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  const Text(
+                    'Brightness',
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 300,
+                    child: Slider(
+                      value: brightness,
+                      min: 0,
+                      max: 100,
+                      onChanged: (value) => setState(() {
+                        sliderChanged = true;
+                        brightness = value;
+                      }),
+                      onChangeEnd: (value) =>
+                          (entity as HomeAssistantLightEntity).setBrightness(convertPctTo255(value)),
+                    ),
+                  ),
+                ],
               ),
             );
           });

@@ -41,6 +41,7 @@ class HomeAssistantEntity {
   bool assumedState = false;
   String? entityPicture;
   String? icon;
+  DateTime? lastUpdated;
 
   Map attributes = {};
 
@@ -68,6 +69,7 @@ class HomeAssistantEntity {
     entityPicture = stateData['attributes']['entity_picture'];
     icon = stateData['attributes']['icon'];
     attributes = stateData['attributes'];
+    lastUpdated = DateTime.parse(stateData['last_updated']);
   }
 
   void handleUpdate(Map<String, dynamic> newState) {
@@ -81,6 +83,7 @@ class HomeAssistantEntity {
     icon = newState['attributes']['icon'];
     entityPicture = newState['attributes']['entity_picture'];
     assumedState = newState['attributes']['assumed_state'] ?? false;
+    lastUpdated = DateTime.parse(stateData['last_updated']);
     notify();
   }
 }
