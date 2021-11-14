@@ -1,4 +1,5 @@
 import 'package:controlly/homeassistant/entity.dart';
+import 'package:controlly/utils/ws.dart';
 
 class HomeAssistantLightEntity extends HomeAssistantSwitchableEntity {
   int? brightness;
@@ -17,6 +18,15 @@ class HomeAssistantLightEntity extends HomeAssistantSwitchableEntity {
   void handleUpdate(Map<String, dynamic> newState) {
     super.handleUpdate(newState);
     brightness = newState['attributes']['brightness'];
+  }
+
+  void setBrightness(int brightness) {
+    parent.send(WSMessage.fromMap({
+      'type': 'call_service',
+      'domain': domain,
+      'service': 'turn_on',
+      'service_data': {'entity_id': id, 'brightness': brightness}
+    }));
   }
 
   @override

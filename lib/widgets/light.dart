@@ -1,3 +1,4 @@
+import 'package:controlly/dialogs/light.dart';
 import 'package:controlly/homeassistant/entities/light.dart';
 import 'package:controlly/homeassistant/entity.dart';
 import 'package:controlly/utils/colors.dart';
@@ -57,7 +58,8 @@ class _LightWidgetState extends State<LightWidget> {
                             ),
                             Center(
                                 child: Text("$brightness%",
-                                    textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 10))),
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(color: Colors.white, fontSize: 10))),
                           ],
                         ),
                       )),
@@ -109,6 +111,12 @@ class _LightWidgetState extends State<LightWidget> {
       entity: entity,
       config: config,
       onTap: () => (entity as HomeAssistantLightEntity).toggle(),
+      onLongPress: () => showDialog(
+          context: context,
+          builder: (context) => LightDialog(
+                entity: entity,
+                config: config,
+              )),
       child: DefaultTextStyle(
         style: const TextStyle(
           color: Colors.white,

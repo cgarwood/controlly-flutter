@@ -115,3 +115,11 @@ Color colorFromRange(value, minValue, maxValue, minHue, maxHue) {
   HSLColor maxColor = HSLColor.fromAHSL(1, (maxHue ?? 1).toDouble(), 1, 0.3);
   return HSLColor.lerp(minColor, maxColor, percent)!.toColor();
 }
+
+double convert255ToPct(int value) {
+  return value / 255 * 100;
+}
+
+int convertPctTo255(double value) {
+  return (value / 100 * 255).round();
+}
