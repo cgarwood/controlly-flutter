@@ -6,6 +6,7 @@ import 'package:controlly/utils/colors.dart';
 import 'package:controlly/utils/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:yaml/yaml.dart';
 
@@ -35,6 +36,7 @@ class _LightDialogState extends State<LightDialog> {
 
   @override
   Widget build(BuildContext context) {
+    print(entity.attributes);
     return StatefulBuilder(builder: (context, setState) {
       return StreamBuilder(
           stream: store.ha!.updates,
@@ -69,31 +71,49 @@ class _LightDialogState extends State<LightDialog> {
                   ),
                 ]),
               ]),
-              body: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  const Text(
-                    'Brightness',
-                    style: TextStyle(
-                      fontSize: 16,
+              body: Column(children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    const Text(
+                      'Brightness',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    width: 300,
-                    child: Slider(
-                      value: brightness,
-                      min: 0,
-                      max: 100,
-                      onChanged: (value) => setState(() {
-                        sliderChanged = true;
-                        brightness = value;
-                      }),
-                      onChangeEnd: (value) =>
-                          (entity as HomeAssistantLightEntity).setBrightness(convertPctTo255(value)),
+                    SizedBox(
+                      width: 300,
+                      child: Slider(
+                        value: brightness,
+                        min: 0,
+                        max: 100,
+                        onChanged: (value) => setState(() {
+                          sliderChanged = true;
+                          brightness = value;
+                        }),
+                        onChangeEnd: (value) =>
+                            (entity as HomeAssistantLightEntity).setBrightness(convertPctTo255(value)),
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+                if ((entity as HomeAssistantLightEntity).supportsColor && entity.state == "on")
+                  Column(children: [
+                    const Padding(padding: EdgeInsets.all(8.0)),
+                    ColorPicker(
+                      pickerColor: Color.fromRGBO(
+                          (entity as HomeAssistantLightEntity).rgbColor?[0] ?? 0,
+                          (entity as HomeAssistantLightEntity).rgbColor?[1] ?? 0,
+                          (entity as HomeAssistantLightEntity).rgbColor?[2] ?? 0,
+                          1),
+                      enableAlpha: false,
+                      paletteType: PaletteType.hueWheel,
+                      colorPickerWidth: 160,
+                      labelTypes: const [],
+                      onColorChanged: (value) => (entity as HomeAssistantLightEntity).setColor(value),
+                    ),
+                  ]),
+              ]),
             );
           });
     });
