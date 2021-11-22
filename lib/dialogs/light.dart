@@ -36,7 +36,6 @@ class _LightDialogState extends State<LightDialog> {
 
   @override
   Widget build(BuildContext context) {
-    print(entity.attributes);
     return StatefulBuilder(builder: (context, setState) {
       return StreamBuilder(
           stream: store.ha!.updates,
