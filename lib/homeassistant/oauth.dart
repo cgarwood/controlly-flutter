@@ -8,23 +8,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 import './homeassistant.dart';
 
-// import 'package:oauth2/oauth2.dart' as oath2;
-
-/*
-app.get('/login', function(req, res) {
-var scopes = 'user-read-private user-read-email';
-res.redirect('https://accounts.spotify.com/authorize' +
-  '?response_type=code' +
-  '&client_id=' + my_client_id +
-  (scopes ? '&scope=' + encodeURIComponent(scopes) : '') +
-  '&redirect_uri=' + encodeURIComponent(redirect_uri));
-});
-*/
-
 class HassOAuth2Page extends StatefulWidget {
   final HomeAssistantSettings settings;
   final Uri response;
-  const HassOAuth2Page(this.settings, this.response);
+  const HassOAuth2Page({Key? key, required this.settings, required this.response}) : super(key: key);
 
   @override
   _HassOAuth2PageState createState() => _HassOAuth2PageState();
