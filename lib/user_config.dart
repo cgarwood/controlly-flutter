@@ -1,5 +1,6 @@
 import 'package:controlly/settings/model.dart';
 import 'package:controlly/store.dart';
+import 'package:controlly/utils/helpers.dart';
 import 'package:http/http.dart' as http;
 import 'package:yaml/yaml.dart';
 
@@ -11,7 +12,16 @@ Future<bool> loadUserConfig() async {
 
   var response = await http.get(Uri.parse(configPath));
   if (response.statusCode == 200) {
-    store.userConfig = loadYaml(response.body);
+    try {
+      store.userConfig = loadYaml(response.body);
+    } catch (e) {
+      showErrorDialog(
+        title: 'Error loading controlly configuration',
+        body: 'The following error occured when trying to parse the controlly configuration:',
+        exception: e,
+      );
+      return false;
+    }
     return true;
   }
   return false;

@@ -1,3 +1,5 @@
+import 'package:controlly/config.dart';
+import 'package:controlly/dialogs/error.dart';
 import 'package:flutter/material.dart';
 
 extension StringTitleCase on String {
@@ -122,4 +124,18 @@ double convert255ToPct(int value) {
 
 int convertPctTo255(double value) {
   return (value / 100 * 255).round();
+}
+
+void showErrorDialog({title = 'Error', subtitle, body, exception}) {
+  showDialog(
+    context: Config.scaffoldKey.currentContext!,
+    builder: (BuildContext context) {
+      return ErrorDialog(
+        title: title,
+        subtitle: subtitle,
+        body: body,
+        exception: exception?.toString(),
+      );
+    },
+  );
 }

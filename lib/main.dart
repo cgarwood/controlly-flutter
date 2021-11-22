@@ -165,6 +165,7 @@ class _ControllyHomeState extends State<ControllyHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: Config.scaffoldKey,
       appBar: AppBar(
         title: Text(widget.title),
         actions: [
@@ -207,7 +208,7 @@ class _ControllyHomeState extends State<ControllyHome> {
               stream: store.ha!.updates,
               builder: (context, snapshot) {
                 var pages = <Widget>[];
-                store.userConfig['pages'].forEach((key, value) {
+                store.userConfig['pages']?.forEach((key, value) {
                   pages.add(PageWidget(pageConfig: value));
                 });
                 return PageView(

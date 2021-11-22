@@ -13,4 +13,5 @@ class Config {
   static const hassRedirectUri = "controlly://main/auth-callback";
 
   static var navigatorKey = GlobalKey<NavigatorState>();
+  static GlobalKey<ScaffoldMessengerState> scaffoldKey = GlobalKey<ScaffoldMessengerState>();
 }
