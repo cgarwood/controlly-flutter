@@ -13,6 +13,9 @@ class HomeAssistantClimateEntity extends HomeAssistantEntity {
   bool? fanOn;
   HomeAssistantFanMode fanMode = HomeAssistantFanMode.auto;
   HomeAssistantHVACMode hvacMode = HomeAssistantHVACMode.cool;
+  String? hvacAction;
+  int? targetTempHigh;
+  int? targetTempLow;
 
   HomeAssistantClimateEntity(
     id,
@@ -33,6 +36,9 @@ class HomeAssistantClimateEntity extends HomeAssistantEntity {
         : stateData['attributes']['hvac_mode'] == 'cool'
             ? HomeAssistantHVACMode.cool
             : HomeAssistantHVACMode.auto;
+    hvacAction = stateData['attributes']['hvac_action'];
+    targetTempHigh = stateData['attributes']['target_temp_high'];
+    targetTempLow = stateData['attributes']['target_temp_low'];
   }
 
   @override
@@ -47,6 +53,9 @@ class HomeAssistantClimateEntity extends HomeAssistantEntity {
         : newState['attributes']['hvac_mode'] == 'cool'
             ? HomeAssistantHVACMode.cool
             : HomeAssistantHVACMode.auto;
+    hvacAction = newState['attributes']['hvac_action'];
+    targetTempHigh = newState['attributes']['target_temp_high'];
+    targetTempLow = newState['attributes']['target_temp_low'];
   }
 
   @override

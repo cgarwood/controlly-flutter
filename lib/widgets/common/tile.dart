@@ -7,6 +7,7 @@ import 'package:yaml/yaml.dart';
 class CommonTileWidget extends StatefulWidget {
   final HomeAssistantEntity entity;
   final YamlMap config;
+  final Color? backgroundColor;
   final Widget child;
   final Function()? onTap;
   final Function()? onLongPress;
@@ -15,6 +16,7 @@ class CommonTileWidget extends StatefulWidget {
     required this.entity,
     required this.config,
     required this.child,
+    this.backgroundColor,
     this.onTap,
     this.onLongPress,
   }) : super(key: key);
@@ -28,7 +30,7 @@ class _CommonTileWidgetState extends State<CommonTileWidget> {
   YamlMap get config => widget.config;
 
   Color get backgroundColor {
-    return getBackgroundColor(entity, config);
+    return widget.backgroundColor ?? getBackgroundColor(entity, config);
   }
 
   @override

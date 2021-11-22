@@ -57,7 +57,7 @@ Color getBackgroundColor(entity, config) {
     case "climate":
       switch (entity.state) {
         case 'heat':
-          return Colors.red;
+          return Colors.orange.shade900;
         case 'cool':
           return Colors.blue;
       }
